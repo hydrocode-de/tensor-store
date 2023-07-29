@@ -6,7 +6,7 @@ from supabase import Client, create_client
 from gotrue.types import AuthResponse, User, Session
 from dotenv import load_dotenv
 
-from .store import TensorStore
+from .store import TensorStore, StoreContext
 
 
 load_dotenv()
@@ -47,33 +47,35 @@ class BackendSession(object):
 
         # return response
         return response
+    
+    def logout(self):
+        if hasattr(self, '_client') and self._client is not None:
+            self.client.auth.sign_out()
 
-    def __call__(self) -> TensorStore:
+    def __del__(self):
+        self.logout()
+
+    def __enter__(self) -> StoreContext:
         # login if not logged in
         if not hasattr(self, '_session') or self._session is None:
             self.login_by_mail()
+        
+        # return a Store
+        return StoreContext(self)
+    
+    def __exit__(self, *args):
+        self.logout()
 
+    def __call__(self) -> TensorStore:
         # init a store
         return TensorStore(self)
 
-
 def login(email: str, password: str, backend_url: Optional[str] = None, backend_key: Optional[str] = None) -> TensorStore:
-    # load backend url and key from env
-    if backend_url is None:
-        backend_url = os.environ.get('SUPABASE_URL', 'http://localhost:8000')
-    
-    # TODO: replace default key with the hydrocode.cloud key
-    if backend_key is None:
-        try:
-            backend_key = os.environ['SUPABASE_KEY']
-        except KeyError:
-            raise RuntimeError('No backend key provided and no SUPABASE_KEY environment variable found.')
-    
-    # init a session
+    # get a session
     session = BackendSession(email, password, backend_url, backend_key)
 
-    # login
-    session.login_by_mail()
+    # bind the session to the Store
+    store = TensorStore(session)
 
-    # return session
-    return session()
+    # return the store
+    return store
