@@ -13,13 +13,13 @@ def requirements():
 
 def version():
     loc = dict()
-    with open('tensor_store/__version__.py') as f:
+    with open('tensorage/__version__.py') as f:
         exec(f.read(), loc, loc)
         return loc['__version__']
     
 
 setup(
-    name='tensor_store',
+    name='tensorage',
     version=version(),
     description='Storing tensors in a supabase backend',
     long_description=readme(),
