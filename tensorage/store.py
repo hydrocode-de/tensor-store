@@ -12,7 +12,7 @@ from .types import Dataset
 class TensorStore(object):
     _session: 'BackendSession' = field(repr=False)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: Union[str, slice, Tuple[Union[str, slice, int]]]):
         raise NotImplementedError
 
     def __setitem__(self, key: str, value: Union[List[list], np.ndarray]):
@@ -38,7 +38,7 @@ class TensorStore(object):
             # insert the tensor
             context.insert_tensor(dataset.id, [chunk for chunk in value])
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: str):
         raise NotImplementedError
 
     def keys(self):
@@ -90,13 +90,13 @@ class StoreContext(object):
         # return 
         return True
 
-    def get_tensor():
+    def get_tensor(self, key: str, index_low: int, index_up: int, slice_low: List[int], slice_up: List[int]) -> np.ndarray:
         raise NotImplementedError
 
-    def remove_tensor():
+    def remove_dataset(self, key: str):
         raise NotImplementedError
 
-    def list_tensor_keys():
+    def list_tensor_keys(self):
         raise NotImplementedError
 
     def __del__(self):
