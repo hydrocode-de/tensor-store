@@ -1,8 +1,11 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Tuple, Union, List
 from dataclasses import dataclass, field
+
+import numpy as np
 
 if TYPE_CHECKING:
     from tensorage.session import BackendSession
+from .types import Dataset
 
 
 @dataclass
@@ -26,7 +29,10 @@ class TensorStore(object):
 class StoreContext(object):
     _session: 'BackendSession' = field(repr=False)
 
-    def add_new_tensor():
+    def insert_dataset(self, key: str, shape: Tuple[int], dim: int) -> Dataset:
+        raise NotImplementedError
+    
+    def insert_tensor(self, data_id: int, data: Union[List[list], np.ndarray]):
         raise NotImplementedError
 
     def get_tensor():
