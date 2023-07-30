@@ -91,6 +91,20 @@ class TensorStore(object):
 
     def __delitem__(self, key: str):
         raise NotImplementedError
+    
+    def __contains__(self, key: str):
+        # get the keys
+        keys = self.keys()
+
+        # check if key is in keys
+        return key in keys
+    
+    def __len__(self):
+        # get the keys
+        keys = self.keys()
+
+        # return the length
+        return len(keys)
 
     def keys(self) -> List[str]:
         # get the keys from the database
