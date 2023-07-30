@@ -12,8 +12,59 @@ from .types import Dataset
 class TensorStore(object):
     _session: 'BackendSession' = field(repr=False)
 
-    def __getitem__(self, key: Union[str, slice, Tuple[Union[str, slice, int]]]):
-        raise NotImplementedError
+    def __getitem__(self, key: Union[str, Tuple[Union[str, slice, int]]]):
+        # first get key
+        if isinstance(key, str):
+            name = key
+        elif isinstance(key[0], str):
+            name = key[0]
+        else:
+            raise KeyError('You need to pass the key as first argument.')
+        
+        # load the dataset
+        with self._session as context:
+            dataset = context.get_dataset(name)
+
+        # now we need to figure out, what kind of slice we need to pass
+        if isinstance(key, str):
+            index = [1, dataset.shape[0] + 1]
+            slices = [[1, dataset.shape[i] + 1] for i in range(1, dataset.ndim)]
+        
+        # handle all the tuple cases
+        else:
+            # index
+            if isinstance(key[1], int):
+                index = [key[1] + 1, key[1] + 2]
+            elif isinstance(key[1], slice):
+                index = [key[1].start + 1, key[1].stop + 2]
+            else:
+                raise KeyError('Batch index needs to be passed as int or slice.')
+            
+            # slices
+            if len(key) == 2:
+                slices = [[1, dataset.shape[i] + 1] for i in range(2, dataset.ndim)]
+            else:  # more than 2
+                slices = []
+                for i, arg in enumerate(key[2:]):
+                    if isinstance(arg, int):
+                        slices.append([arg + 1, arg + 1])
+                    elif isinstance(arg, slice):
+                        slices.append([arg.start + 1 if arg.start is not None else 1, arg.stop + 1 if arg.stop is not None else dataset.shape[i + 1] + 1])
+                    else:
+                        raise KeyError('Slice needs to be passed as int or slice.')
+                
+                # check if we have all slices
+                if len(slices) + 1 != dataset.ndim:
+                    for i in range(len(slices) + 1, dataset.ndim):
+                        slices.append([1, dataset.shape[i] + 1])
+        
+        # now, name, index and slices are set
+        with self._session as context:
+            # load the tensor
+            arr = context.get_tensor(name, index[0], index[1], [s[0] for s in slices], [s[1] for s in slices])
+        
+        # TODO now we can transform to other libaries
+        return arr
 
     def __setitem__(self, key: str, value: Union[List[list], np.ndarray]):
         # first make a numpy array from it
@@ -93,8 +144,37 @@ class StoreContext(object):
         # return 
         return True
 
-    def get_tensor(self, key: str, index_low: int, index_up: int, slice_low: List[int], slice_up: List[int]) -> np.ndarray:
-        raise NotImplementedError
+    def get_dataset(self, key: str) -> Dataset:
+        # setup auth token
+        self.__setup_auth()
+
+        # get the dataset
+        response = self.backend.client.table('datasets').select('*').eq('key', key).execute()
+
+        # restore old token
+        self.__restore_auth()
+
+        # grab the data
+        data = response.data[0]
+
+        # return as Dataset
+        return Dataset(id=data['id'], key=data['key'], shape=data['shape'], ndim=data['ndim'])
+
+    def get_tensor(self, name: str, index_low: int, index_up: int, slice_low: List[int], slice_up: List[int]) -> np.ndarray:
+        # setup auth token
+        self.__setup_auth()
+
+        # get the requested chunk
+        response = self.backend.client.rpc('tensor_float4_slice', {'name': name, 'index_low': index_low, 'index_up': index_up, 'slice_low': slice_low, 'slice_up': slice_up}).execute()
+
+        # restore old token
+        self.__restore_auth()
+
+        # grab the data
+        data = response.data[0]['tensor']
+
+        # return as np.ndarray
+        return np.asarray(data)
 
     def remove_dataset(self, key: str):
         raise NotImplementedError
