@@ -92,8 +92,13 @@ class TensorStore(object):
     def __delitem__(self, key: str):
         raise NotImplementedError
 
-    def keys(self):
-        raise NotImplementedError
+    def keys(self) -> List[str]:
+        # get the keys from the database
+        with self._session as context:
+            keys = context.list_tensor_keys()
+        
+        # TODO: here caching could be added
+        return keys
 
 
 @dataclass
@@ -176,11 +181,30 @@ class StoreContext(object):
         # return as np.ndarray
         return np.asarray(data)
 
-    def remove_dataset(self, key: str):
-        raise NotImplementedError
+    def remove_dataset(self, key: str) -> bool:
+        # setup auth token
+        self.__setup_auth()
 
-    def list_tensor_keys(self):
-        raise NotImplementedError
+        # remove the dataset
+        self.backend.client.table('datasets').delete().eq('key', key).execute()
+
+        # restore old token
+        self.__restore_auth()
+        
+        # return
+        return True
+
+    def list_tensor_keys(self) -> List[str]:
+        # setup auth token
+        self.__setup_auth()
+
+        # get the keys
+        response = self.backend.client.table('datasets').select('key').execute()
+
+        # restore old token
+        self.__restore_auth()
+
+        return [row['key'] for row in response.data]
 
     def __del__(self):
         self.backend.logout()
