@@ -7,4 +7,4 @@ class Dataset(object):
     id: int
     key: str
     shape: Tuple[int]
-    dim: int
+    ndim: int
