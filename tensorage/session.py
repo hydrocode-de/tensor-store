@@ -1,6 +1,5 @@
-from typing import Any, Optional
+from typing import Any
 from dataclasses import dataclass, field
-import os
 
 from supabase import Client, create_client
 from gotrue.types import AuthResponse, User, Session
@@ -37,6 +36,17 @@ class BackendSession(object):
         self._session = response.session
         # return response
         return response
+    
+    def register_by_mail(self, email: str, password: str) -> AuthResponse:
+        # register
+        response = self.client.auth.sign_up({'email': email, 'password': password})
+        
+        # store user and session info
+        self._user = response.user
+        self._session = response.session
+
+        # return response
+        return response
 
     def refresh(self) -> AuthResponse:
         # refresh
@@ -69,23 +79,3 @@ class BackendSession(object):
     def __call__(self) -> TensorStore:
         # init a store
         return TensorStore(self)
-
-def login(email: str, password: str, backend_url: Optional[str] = None, backend_key: Optional[str] = None) -> TensorStore:
-    # get the environment variables
-    if backend_url is None:
-        backend_url = os.getenv('SUPABASE_URL', 'http://localhost:8000')
-    
-    if backend_key is None:
-        try:
-            backend_key = os.environ['SUPABASE_KEY']
-        except KeyError:
-            raise RuntimeError('SUPABASE_KEY environment variable not set')
-    
-    # get a session
-    session = BackendSession(email, password, backend_url, backend_key)
-
-    # bind the session to the Store
-    store = TensorStore(session)
-
-    # return the store
-    return store
