@@ -146,13 +146,13 @@ class StoreContext(object):
         data = response.data[0]
         return Dataset(id=data['id'], key=data['key'], shape=data['shape'], ndim=data['ndim'])
     
-    def insert_tensor(self, data_id: int, data: List[np.ndarray]) -> bool:
+    def insert_tensor(self, data_id: int, data: List[np.ndarray], offset: int = 0) -> bool:
         # setup auth token
         self.__setup_auth()
         
         # run the insert
         try:
-            response = self.backend.client.table('tensors_float4').insert([{'data_id': data_id, 'index': i + 1, 'user_id': self.user_id, 'tensor': chunk.tolist()} for i, chunk in enumerate(data)]).execute()
+            response = self.backend.client.table('tensors_float4').insert([{'data_id': data_id, 'index': i + 1 + offset, 'user_id': self.user_id, 'tensor': chunk.tolist()} for i, chunk in enumerate(data)]).execute()
         except Exception as e:
             print(response.data)
             raise e
