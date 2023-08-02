@@ -1,7 +1,10 @@
 from typing import TYPE_CHECKING, Tuple, Union, List
 from dataclasses import dataclass, field
+import warnings
 
+from tqdm import tqdm
 import numpy as np
+from postgrest.exceptions import APIError
 
 if TYPE_CHECKING:
     from tensorage.session import BackendSession
@@ -11,6 +14,17 @@ from .types import Dataset
 @dataclass
 class TensorStore(object):
     _session: 'BackendSession' = field(repr=False)
+    quiet: bool = field(default=False)
+
+    # some stuff for upload
+    chunk_size: int = field(default=100000, repr=False)
+
+    def __post_init__(self):
+        # check if the schema is installed
+        with self._session as context:
+            if not context.check_schema_installed():
+                from tensorage.db_init import SQL
+                warnings.warn(f"The schema for the TensorStore is not installed. Please connect the database and run the following script:\n\n--------8<--------\n{SQL}\n\n--------8<--------\n")
 
     def __getitem__(self, key: Union[str, Tuple[Union[str, slice, int]]]):
         # first get key
@@ -81,13 +95,33 @@ class TensorStore(object):
         # get the dim
         dim = value.ndim
 
+        # check if this should be uplaoded chunk-wise
+        if value.size > self.chunk_size:
+            # figure out a good batch size
+            batch_size = self.chunk_size // np.multiply(*value.shape[1:])
+            if batch_size == 0:
+                batch_size = 1
+            
+            # create the index over the batch to determine the offset on upload
+            single_index = np.arange(0, value.shape[0], batch_size, dtype=int)
+            batch_index = list(zip(single_index, single_index[1:].tolist() + [value.shape[0]]))
+            
+            # build the 
+            batches = [(i * batch_size, value[up:low]) for i, (up, low) in enumerate(batch_index)]
+        else:
+            batches = [(0, value)]
+
         # connect
         with self._session as context:
             # insert the dataset
             dataset = context.insert_dataset(key, shape, dim)
 
+            # make the iterator
+            _iterator = tqdm(batches, desc=f'Uploading {key} [{len(batches)} batches of {batch_size}]') if not self.quiet else batches
+
             # insert the tensor
-            context.insert_tensor(dataset.id, [chunk for chunk in value])
+            for offset, batch in _iterator:
+                context.insert_tensor(dataset.id, [tensor for tensor in batch], offset=offset)
 
     def __delitem__(self, key: str):
         raise NotImplementedError
@@ -132,6 +166,25 @@ class StoreContext(object):
         # restore the original JWT
         self.backend.client.postgrest.auth(self._anon_key)
 
+    def check_schema_installed(self) -> bool:
+        # setup auth token
+        self.__setup_auth()
+
+        # check if the datasets and tensor_float4 tables exist
+        missing_table = False
+
+        for table in ('datasets', 'tensors_float4'):
+            try:
+                self.backend.client.table(table).select('*', count='exact').limit(1).execute()
+            except APIError as e:
+                if e.code == '42P01':
+                    missing_table = True
+                else:
+                    raise e
+        
+        # check if any of the needed tables was not found
+        return not missing_table
+
     @property
     def user_id(self) -> str:
         return self.backend._user.id
@@ -149,12 +202,12 @@ class StoreContext(object):
     def insert_tensor(self, data_id: int, data: List[np.ndarray], offset: int = 0) -> bool:
         # setup auth token
         self.__setup_auth()
-        
+
         # run the insert
         try:
-            response = self.backend.client.table('tensors_float4').insert([{'data_id': data_id, 'index': i + 1 + offset, 'user_id': self.user_id, 'tensor': chunk.tolist()} for i, chunk in enumerate(data)]).execute()
-        except Exception as e:
-            print(response.data)
+            self.backend.client.table('tensors_float4').insert([{'data_id': data_id, 'index': int(i + 1 + offset), 'user_id': self.user_id, 'tensor': chunk.tolist()} for i, chunk in enumerate(data)]).execute()
+        except APIError as e:
+            # TODO check if we expired here and refresh the token
             raise e
         
         # restore old token
