@@ -124,7 +124,8 @@ class TensorStore(object):
                 context.insert_tensor(dataset.id, [tensor for tensor in batch], offset=offset)
 
     def __delitem__(self, key: str):
-        raise NotImplementedError
+        with self._session as context:
+            context.remove_dataset(key)
     
     def __contains__(self, key: str):
         # get the keys
