@@ -1,14 +1,38 @@
-from typing import Any
+from typing import Any, TypeVar, Generic
 from dataclasses import dataclass, field
 
 from supabase import Client, create_client
 from gotrue.types import AuthResponse, User, Session
 from dotenv import load_dotenv
 
-from .store import TensorStore, StoreContext
-
+from .store import TensorStore
+from .backend.base import BaseContext
+from .backend.database import DatabaseContext
+from .backend.storage import StorageContext
 
 load_dotenv()
+
+
+C = TypeVar('C', bound=BaseContext)
+
+@dataclass
+class ContextWrapper(Generic[C]):
+    _session: 'BackendSession'
+    Context: type[C]
+
+    def __enter__(self) -> C:
+        # login the session if it is not logged in
+        if not hasattr(self._session, '_session') or self._session._session is None:
+            self._session.login_by_mail()
+        
+        # instatiate the store with an authenticated Session
+        context = self.Context(self._session)
+
+        return context
+
+    def __exit__(self, *args):
+        # logout the session
+        self._session.logout()
 
 
 @dataclass
@@ -20,6 +44,7 @@ class BackendSession(object):
     _client: Client = field(init=False, repr=False)
     _user: User = field(init=False, repr=False)
     _session: Session = field(init=False, repr=False)
+
 
     @property
     def client(self) -> Client:
@@ -62,18 +87,13 @@ class BackendSession(object):
         if hasattr(self, '_client') and self._client is not None:
             self.client.auth.sign_out()
 
-    def __del__(self):
-        self.logout()
-
-    def __enter__(self) -> StoreContext:
-        # login if not logged in
-        if not hasattr(self, '_session') or self._session is None:
-            self.login_by_mail()
-        
-        # return a Store
-        return StoreContext(self)
+    def database(self) -> ContextWrapper[DatabaseContext]:
+        return ContextWrapper(self, DatabaseContext)
     
-    def __exit__(self, *args):
+    def storage(self) -> ContextWrapper[StorageContext]:
+        return ContextWrapper(self, StorageContext)
+
+    def __del__(self):
         self.logout()
 
     def __call__(self) -> TensorStore:
