@@ -4,16 +4,14 @@ import warnings
 
 from tqdm import tqdm
 import numpy as np
-from postgrest.exceptions import APIError
 
 if TYPE_CHECKING:
     from tensorage.session import BackendSession
-from .types import Dataset
 
 
 @dataclass
 class TensorStore(object):
-    _session: 'BackendSession' = field(repr=False)
+    backend: 'BackendSession' = field(repr=False)
     quiet: bool = field(default=False)
 
     # some stuff for upload
@@ -21,8 +19,8 @@ class TensorStore(object):
 
     def __post_init__(self):
         # check if the schema is installed
-        with self._session as context:
-            if not context.check_schema_installed():
+        with self.backend.database() as db:
+            if not db.check_schema_installed():
                 from tensorage.db_init import SQL
                 warnings.warn(f"The schema for the TensorStore is not installed. Please connect the database and run the following script:\n\n--------8<--------\n{SQL}\n\n--------8<--------\n")
 
@@ -36,8 +34,8 @@ class TensorStore(object):
             raise KeyError('You need to pass the key as first argument.')
         
         # load the dataset
-        with self._session as context:
-            dataset = context.get_dataset(name)
+        with self.backend.database() as db:
+            dataset = db.get_dataset(name)
 
         # now we need to figure out, what kind of slice we need to pass
         if isinstance(key, str):
@@ -73,9 +71,9 @@ class TensorStore(object):
                         slices.append([1, dataset.shape[i] + 1])
         
         # now, name, index and slices are set
-        with self._session as context:
+        with self.backend.database() as db:
             # load the tensor
-            arr = context.get_tensor(name, index[0], index[1], [s[0] for s in slices], [s[1] for s in slices])
+            arr = db.get_tensor(name, index[0], index[1], [s[0] for s in slices], [s[1] for s in slices])
         
         # TODO now we can transform to other libaries
         return arr
@@ -112,20 +110,20 @@ class TensorStore(object):
             batches = [(0, value)]
 
         # connect
-        with self._session as context:
+        with self.backend.database() as db:
             # insert the dataset
-            dataset = context.insert_dataset(key, shape, dim)
+            dataset = db.insert_dataset(key, shape, dim)
 
             # make the iterator
             _iterator = tqdm(batches, desc=f'Uploading {key} [{len(batches)} batches of {batch_size}]') if not self.quiet else batches
 
             # insert the tensor
             for offset, batch in _iterator:
-                context.insert_tensor(dataset.id, [tensor for tensor in batch], offset=offset)
+                db.insert_tensor(dataset.id, [tensor for tensor in batch], offset=offset)
 
     def __delitem__(self, key: str):
-        with self._session as context:
-            context.remove_dataset(key)
+        with self.backend.database() as db:
+            db.remove_dataset(key)
     
     def __contains__(self, key: str):
         # get the keys
@@ -143,136 +141,8 @@ class TensorStore(object):
 
     def keys(self) -> List[str]:
         # get the keys from the database
-        with self._session as context:
-            keys = context.list_tensor_keys()
+        with self.backend.database() as db:
+            keys = db.list_dataset_keys()
         
         # TODO: here caching could be added
         return keys
-
-
-@dataclass
-class StoreContext(object):
-    # This is the OPENED session, as we are in the StoreContext
-    backend: 'BackendSession' = field(repr=False)
-    _anon_key: str = field(init=False, repr=False)
-
-    def __setup_auth(self):
-        # store the current JWT token
-        self._anon_key = self.backend.client.supabase_key
-
-        # set the JWT of the authenticated user as the new token
-        self.backend.client.postgrest.auth(self.backend._session.access_token)
-    
-    def __restore_auth(self):
-        # restore the original JWT
-        self.backend.client.postgrest.auth(self._anon_key)
-
-    def check_schema_installed(self) -> bool:
-        # setup auth token
-        self.__setup_auth()
-
-        # check if the datasets and tensor_float4 tables exist
-        missing_table = False
-
-        for table in ('datasets', 'tensors_float4'):
-            try:
-                self.backend.client.table(table).select('*', count='exact').limit(1).execute()
-            except APIError as e:
-                if e.code == '42P01':
-                    missing_table = True
-                else:
-                    raise e
-        
-        # check if any of the needed tables was not found
-        return not missing_table
-
-    @property
-    def user_id(self) -> str:
-        return self.backend._user.id
-
-    def insert_dataset(self, key: str, shape: Tuple[int], dim: int) -> Dataset:
-        # run the insert
-        self.__setup_auth()
-        response = self.backend.client.table('datasets').insert({'key': key, 'shape': shape, 'ndim': dim, 'user_id': self.user_id}).execute()
-        self.__restore_auth()
-
-        # return an instance of Dataset
-        data = response.data[0]
-        return Dataset(id=data['id'], key=data['key'], shape=data['shape'], ndim=data['ndim'])
-    
-    def insert_tensor(self, data_id: int, data: List[np.ndarray], offset: int = 0) -> bool:
-        # setup auth token
-        self.__setup_auth()
-
-        # run the insert
-        try:
-            self.backend.client.table('tensors_float4').insert([{'data_id': data_id, 'index': int(i + 1 + offset), 'user_id': self.user_id, 'tensor': chunk.tolist()} for i, chunk in enumerate(data)]).execute()
-        except APIError as e:
-            # TODO check if we expired here and refresh the token
-            raise e
-        
-        # restore old token
-        self.__restore_auth()
-
-        # return 
-        return True
-
-    def get_dataset(self, key: str) -> Dataset:
-        # setup auth token
-        self.__setup_auth()
-
-        # get the dataset
-        response = self.backend.client.table('datasets').select('*').eq('key', key).execute()
-
-        # restore old token
-        self.__restore_auth()
-
-        # grab the data
-        data = response.data[0]
-
-        # return as Dataset
-        return Dataset(id=data['id'], key=data['key'], shape=data['shape'], ndim=data['ndim'])
-
-    def get_tensor(self, name: str, index_low: int, index_up: int, slice_low: List[int], slice_up: List[int]) -> np.ndarray:
-        # setup auth token
-        self.__setup_auth()
-
-        # get the requested chunk
-        response = self.backend.client.rpc('tensor_float4_slice', {'name': name, 'index_low': index_low, 'index_up': index_up, 'slice_low': slice_low, 'slice_up': slice_up}).execute()
-
-        # restore old token
-        self.__restore_auth()
-
-        # grab the data
-        data = response.data[0]['tensor']
-
-        # return as np.ndarray
-        return np.asarray(data)
-
-    def remove_dataset(self, key: str) -> bool:
-        # setup auth token
-        self.__setup_auth()
-
-        # remove the dataset
-        self.backend.client.table('datasets').delete().eq('key', key).execute()
-
-        # restore old token
-        self.__restore_auth()
-        
-        # return
-        return True
-
-    def list_tensor_keys(self) -> List[str]:
-        # setup auth token
-        self.__setup_auth()
-
-        # get the keys
-        response = self.backend.client.table('datasets').select('key').execute()
-
-        # restore old token
-        self.__restore_auth()
-
-        return [row['key'] for row in response.data]
-
-    def __del__(self):
-        self.backend.logout()
