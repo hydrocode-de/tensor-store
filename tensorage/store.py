@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, Tuple, Union, List
+from typing_extensions import Literal
 from dataclasses import dataclass, field
 import warnings
 
@@ -14,8 +15,13 @@ class TensorStore(object):
     backend: 'BackendSession' = field(repr=False)
     quiet: bool = field(default=False)
 
+    engine: Union[Literal['database'], Literal['storage']] = field(default='database')
+
     # some stuff for upload
     chunk_size: int = field(default=100000, repr=False)
+
+    # add some internal metadata
+    _keys: List[str] = field(default_factory=list, repr=False)
 
     def __post_init__(self):
         # check if the schema is installed
@@ -23,6 +29,18 @@ class TensorStore(object):
             if not db.check_schema_installed():
                 from tensorage.db_init import SQL
                 warnings.warn(f"The schema for the TensorStore is not installed. Please connect the database and run the following script:\n\n--------8<--------\n{SQL}\n\n--------8<--------\n")
+        
+        # get the current keys
+        self.keys()
+
+    def get_context(self):
+        raise NotImplementedError
+        if self.engine == 'database':
+            return self.backend.database()
+        elif self.engine == 'storage':
+            return self.backend.storage()
+        else:
+            raise ValueError(f"Unknown engine '{self.engine}'.")
 
     def __getitem__(self, key: Union[str, Tuple[Union[str, slice, int]]]):
         # first get key
@@ -120,7 +138,10 @@ class TensorStore(object):
             # insert the tensor
             for offset, batch in _iterator:
                 db.insert_tensor(dataset.id, [tensor for tensor in batch], offset=offset)
-
+            
+            # finally update the keys
+            self._keys = db.list_dataset_keys()
+ 
     def __delitem__(self, key: str):
         with self.backend.database() as db:
             db.remove_dataset(key)
@@ -144,5 +165,7 @@ class TensorStore(object):
         with self.backend.database() as db:
             keys = db.list_dataset_keys()
         
-        # TODO: here caching could be added
+        # update the internal keys list
+        self._keys = keys
+
         return keys
