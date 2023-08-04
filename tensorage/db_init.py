@@ -19,8 +19,12 @@ ALTER TABLE public.datasets ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow all actions to the record owner" ON "public"."datasets"
 AS PERMISSIVE FOR ALL
 TO authenticated
-USING (is_shared OR (auth.uid() = user_id))
-WITH CHECK (is_shared OR (auth.uid() = user_id));
+USING (auth.uid() = user_id)
+WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Allow authenticated access to shared datasets" ON "public"."datasets"
+AS PERMISSIVE FOR SELECT
+TO authenticated
+USING (is_shared)
 
 
 -- tensor_float4 table
@@ -43,6 +47,10 @@ AS PERMISSIVE FOR ALL
 TO authenticated
 USING (is_shared OR (auth.uid() = user_id))
 WITH CHECK (is_shared OR (auth.uid() = user_id));
+CREATE POLICY "Allow authenticated access to shared datasets" ON "public"."tensors_float4"
+AS PERMISSIVE FOR SELECT
+TO authenticated
+USING (is_shared)
 
 -- create the slicing database function
 CREATE OR REPLACE FUNCTION public.tensor_float4_slice(name character varying, index_low integer, index_up integer, slice_low integer[], slice_up integer[])
