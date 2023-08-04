@@ -8,7 +8,7 @@ public.datasets (
     shape int[] not null,
     created_at timestamp with time zone null default now(),
     user_id uuid null,
-    is_public boolean not null default false,
+    is_shared boolean not null default false,
     constraint datasets_pkey primary key (id),
     constraint datasets_key_user_id_key unique (key, user_id),
     constraint datasets_user_id_fkey foreign key (user_id) references users (id) on delete set null
@@ -19,8 +19,8 @@ ALTER TABLE public.datasets ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow all actions to the record owner" ON "public"."datasets"
 AS PERMISSIVE FOR ALL
 TO authenticated
-USING (is_public OR (auth.uid() = user_id))
-WITH CHECK (is_public OR (auth.uid() = user_id));
+USING (is_shared OR (auth.uid() = user_id))
+WITH CHECK (is_shared OR (auth.uid() = user_id));
 
 
 -- tensor_float4 table
@@ -30,7 +30,7 @@ public.tensors_float4 (
     index bigint not null,
     tensor float4[] not null,
     user_id uuid not null,
-    is_public boolean not null default false,
+    is_shared boolean not null default false,
     constraint tensors_float4_pkey primary key (data_id, index, user_id),
     constraint tensors_float4_data_id_fkey foreign key (data_id) references datasets (id) on delete cascade,
     constraint tensors_float4_user_id_fkey foreign key (user_id) references users (id) on delete set null
@@ -41,8 +41,8 @@ ALTER TABLE public.tensors_float4 ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow all actions to the record owner" ON "public"."tensors_float4"
 AS PERMISSIVE FOR ALL
 TO authenticated
-USING (is_public OR (auth.uid() = user_id))
-WITH CHECK (is_public OR (auth.uid() = user_id));
+USING (is_shared OR (auth.uid() = user_id))
+WITH CHECK (is_shared OR (auth.uid() = user_id));
 
 -- create the slicing database function
 CREATE OR REPLACE FUNCTION public.tensor_float4_slice(name character varying, index_low integer, index_up integer, slice_low integer[], slice_up integer[])
@@ -74,7 +74,7 @@ select
   users.id,
   users.email,
   datasets.key as dataset,
-  sum(pg_column_size(tensors_float4.tensor)::real) / 1024.0::double precision / 1024.0::double precision / 1024.0::double precision as total_size_gb,
+  sum(pg_column_size(tensors_float4.tensor)::real) / 1024.0::real / 1024.0::real / 1024.0::real as total_size_gb,
   pg_size_pretty(sum(pg_column_size(tensors_float4.tensor))) as size
 from
   tensors_float4
@@ -90,7 +90,7 @@ create view
 select
   users.id,
   users.email,
-  sum(pg_column_size(tensors_float4.tensor)::real) / 1024.0::double precision / 1024.0::double precision / 1024.0::double precision as total_size_gb,
+  sum(pg_column_size(tensors_float4.tensor)::real) / 1024.0::real / 1024.0::real / 1024.0::real as total_size_gb,
   pg_size_pretty(sum(pg_column_size(tensors_float4.tensor))) as size
 from
   tensors_float4
