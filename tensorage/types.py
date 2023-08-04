@@ -8,3 +8,5 @@ class Dataset(object):
     key: str
     shape: Tuple[int]
     ndim: int
+    type: str
+    is_shared: bool
