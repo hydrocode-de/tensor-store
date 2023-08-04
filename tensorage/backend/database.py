@@ -80,7 +80,8 @@ class DatabaseContext(BaseContext):
         data = response.data[0]
 
         # return as Dataset
-        return Dataset(id=data['id'], key=data['key'], shape=data['shape'], ndim=data['ndim'])
+        # TODO -> here we hardcode the type to float32 as nothing else is implemented so far
+        return Dataset(id=data['id'], key=data['key'], shape=data['shape'], ndim=data['ndim'], is_shared=data['is_shared'], type='float32')
 
     def get_tensor(self, key: str, index_low: int, index_up: int, slice_low: List[int], slice_up: List[int]) -> np.ndarray:
         # setup auth token
