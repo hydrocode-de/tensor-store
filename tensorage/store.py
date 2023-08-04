@@ -29,7 +29,8 @@ class TensorStore(object):
         # check if the schema is installed
         with self.backend.database() as db:
             if not db.check_schema_installed():
-                from tensorage.db_init import SQL
+                from tensorage.sql.sql import INIT
+                SQL = INIT()
                 warnings.warn(f"The schema for the TensorStore is not installed. Please connect the database and run the following script:\n\n--------8<--------\n{SQL}\n\n--------8<--------\n")
         
         # get the current keys

@@ -1,4 +1,4 @@
-SQL = """
+-- This does only work if run within supabase
 -- datasets table
 create table
 public.datasets (
@@ -106,4 +106,3 @@ from
 group by
   users.id,
   users.email;
-"""
