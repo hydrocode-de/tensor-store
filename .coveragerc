@@ -1,0 +1,17 @@
+[run]
+omit = 
+    tests/*
+    setup.py
+    docs/*
+
+[report]
+exclude_lines = 
+    pragma: no cover
+    def __repr__
+    def __str__
+    if __name__ == .__main__.:
+    raise NotImplementedError
+    raise NotImplemented
+    if False
+    if 0:
+    if self\.debug
