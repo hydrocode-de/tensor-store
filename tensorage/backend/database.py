@@ -47,7 +47,7 @@ class DatabaseContext(BaseContext):
 
         # return an instance of Dataset
         data = response.data[0]
-        return Dataset(id=data['id'], key=data['key'], shape=data['shape'], ndim=data['ndim'])
+        return Dataset(id=data['id'], key=data['key'], shape=data['shape'], ndim=data['ndim'], is_shared=data['is_shared'], type=data['type'])
     
     def insert_tensor(self, data_id: int, data: List[np.ndarray], offset: int = 0) -> bool:
         # setup auth token

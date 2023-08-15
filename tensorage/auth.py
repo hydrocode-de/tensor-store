@@ -1,3 +1,10 @@
+"""
+This module provides authentication and authorization functionality for Supabase.
+
+It provides a `BackendSession` class for managing backend sessions, as well as utility functions for working with authentication tokens and Supabase connection information.
+
+"""
+
 from typing import Optional, Tuple
 import os
 import json
@@ -13,6 +20,15 @@ SUPA_FILE = os.path.join(os.path.dirname(__file__), '.supabase.env')
 
 
 def __get_auth_info(backend_url: Optional[str], backend_key: Optional[str] = None) -> Tuple[str, str]:
+    """
+    Get the Supabase connection information.
+
+    This function returns the Supabase connection information as a tuple of the backend URL and backend key. If the connection information is not provided as arguments, it is read from the `.supabase.env` file or from environment variables.
+
+    :param backend_url: The URL of the Supabase backend.
+    :param backend_key: The API key for the Supabase backend.
+    :return: A tuple of the backend URL and backend key.
+    """
     # check if we saved persisted connection information
     if os.path.exists(SUPA_FILE):
         with open(SUPA_FILE, 'r') as f:
@@ -36,6 +52,18 @@ def __get_auth_info(backend_url: Optional[str], backend_key: Optional[str] = Non
 
 
 def login(email: str, password: str, backend_url: Optional[str] = None, backend_key: Optional[str] = None) -> TensorStore:
+    """
+    Log in to the Supabase backend using email and password authentication.
+
+    This function creates a `BackendSession` object using the provided backend URL and key, or the default values if none are provided. It then logs in to the backend session using the provided email and password. If the login is successful, it returns the tensor store instance for the backend session.
+
+    :param email: The email address of the user to log in.
+    :param password: The password of the user to log in.
+    :param backend_url: The URL of the Supabase backend. Defaults to `None`.
+    :param backend_key: The API key for the Supabase backend. Defaults to `None`.
+    :return: The tensor store instance for the backend session.
+    :raises RuntimeError: If the login fails.
+    """
     # get the environment variables
     backend_url, backend_key = __get_auth_info(backend_url=backend_url, backend_key=backend_key)
     
@@ -50,6 +78,18 @@ def login(email: str, password: str, backend_url: Optional[str] = None, backend_
 
 
 def signup(email: str, password: str, backend_url: Optional[str] = None, backend_key: Optional[str] = None) -> AuthResponse:
+    """
+    Sign up a new user to the Supabase backend using email and password authentication.
+
+    This function creates a `BackendSession` object using the provided backend URL and key, or the default values if none are provided. It then signs up a new user to the backend session using the provided email and password. If the signup is successful, it returns an `AuthResponse` object containing the user's access token and refresh token.
+
+    :param email: The email address of the user to sign up.
+    :param password: The password of the user to sign up.
+    :param backend_url: The URL of the Supabase backend. Defaults to `None`.
+    :param backend_key: The API key for the Supabase backend. Defaults to `None`.
+    :return: An `AuthResponse` object containing the user's access token and refresh token.
+    :raises RuntimeError: If the signup fails.
+    """
     # get the environment variables
     backend_url, backend_key = __get_auth_info(backend_url=backend_url, backend_key=backend_key)
         
