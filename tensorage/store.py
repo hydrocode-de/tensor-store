@@ -1,3 +1,25 @@
+"""
+This module defines the TensorStore class which is responsible for storing and retrieving tensor data from a Supabase backend.
+The store can be accessed by using Pythons set and get item methods. Additionally, all dataset keys are also available
+as attributes of the store object.
+The store supports numpy-style slicing and as of now accepts and returns numpy arrays.
+
+Example:
+
+    .. code-block:: python
+        # login
+        store = login('email', 'password')
+
+        # insert a new dataset into the store
+        store['my_dataset'] = np.random.random((500, 10, 10))
+
+        # retrieve tensor slice data from the store
+        first_twelve = store.my_dataset[0:12]
+
+        # series of subset
+        subset = store['my_dataset', :, 4, 4].flatten()
+"""
+
 from typing import TYPE_CHECKING, Tuple, Union, List, Optional, Any
 from typing_extensions import Literal
 from dataclasses import dataclass, field
@@ -14,6 +36,22 @@ if TYPE_CHECKING:
 
 @dataclass
 class TensorStore(object):
+    """
+    A class representing a tensor store for storing and retrieving tensor data from a backend.
+
+    Args:
+        backend_session (BackendSession): The backend session to use for interacting with the backend.
+
+    Attributes:
+        backend (BackendSession): The backend session to use for interacting with the backend.
+        quiet (bool): Whether to suppress output messages or not.
+        engine (str): The engine to use for storing and retrieving tensor data.
+        chunk_size (int): The chunk size to use for uploading tensor data.
+
+    Raises:
+        ValueError: If the backend session is not provided.
+
+    """
     backend: 'BackendSession' = field(repr=False)
     quiet: bool = field(default=False)
 
@@ -46,7 +84,18 @@ class TensorStore(object):
             raise ValueError(f"Unknown engine '{self.engine}'.")
 
     def get_select_indices(self, key: Union[str, Tuple[Union[str, slice, int]]]) -> Tuple[str, Tuple[int, int], List[Tuple[int, int]]]:
-        # first get key
+        """
+        Retrieves the select indices for the given key from the database.
+
+        Args:
+            key (Union[str, Tuple[Union[str, slice, int]]]): The unique identifier for the tensor or a tuple of slice objects.
+
+        Returns:
+            Tuple[str, Tuple[int, int], List[Tuple[int, int]]]: A tuple containing the key, the shape of the tensor, and a list of index ranges to select.
+
+        Raises:
+            ValueError: If the tensor with the given key does not exist in the database.
+        """        # first get key
         if isinstance(key, str):
             key = (key, )
             name = key
@@ -61,7 +110,19 @@ class TensorStore(object):
         # return the name, index and slices
         return name, index, slices
 
-    def __getitem__(self, key: Union[str, Tuple[Union[str, slice, int]]]):
+    def __getitem__(self, key: Union[str, Tuple[Union[str, slice, int]]]) -> np.ndarray:
+        """
+        Retrieves a tensor from the database with the given key or slice.
+
+        Args:
+            key (Union[str, Tuple[Union[str, slice, int]]]): The unique identifier for the tensor or a tuple of slice objects.
+
+        Returns:
+            np.ndarray: The tensor data with the given key or slice.
+
+        Raises:
+            ValueError: If the tensor with the given key does not exist in the database.
+        """        
         # the user has to pass the key
         if isinstance(key, str):
             key = (key, )  #make it a tuple
@@ -78,18 +139,46 @@ class TensorStore(object):
         # TODO if we use the axes, we need to transform here, before instatiating the StoreSlicer
         return slicer.__getitem__(key[1:])
 
-    def __getattr__(self, key: str):
+    def __getattr__(self, key: str) -> Any:
+        """
+        Instantiate a Slicer with the passed attribute used as dataset key.
+
+        Args:
+            key (str): The key of the attribute to retrieve.
+
+        Returns:
+            Any: The value of the attribute with the given key.
+
+        Raises:
+            AttributeError: If the attribute with the given key does not exist in the backend session.
+        """
         # getattribute did not return anything, so now check if the key is in the keys
         if key in self._keys:
             return StoreSlicer(self, key)
         else:
             raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{key}'")
 
-    def __dir__(self):
+    def __dir__(self) -> List[str]:
+        """
+        Returns a list of all attributes and methods of the TensorStore object.
+
+        Returns:
+            List[str]: A list of all attributes and methods of the TensorStore object.
+        """
         return super().__dir__() + self._keys
 
     def __setitem__(self, key: str, value: Union[List[list], np.ndarray]):
-        # check if the key is already in the database
+        """
+        Uploads a dataset into the backend with the given key and value.
+
+        Args:
+            key (str): The unique identifier for the tensor.
+            value (Union[List[list], np.ndarray]): The tensor data to be set.
+
+        Raises:
+            ValueError: If the tensor with the given key does not exist in the database.
+
+        """        # check if the key is already in the database
         if key in self.keys():
             # TODO here we need to update the dataset in the database
             raise NotImplementedError('Updating datasets is not implemented yet.')
@@ -140,17 +229,41 @@ class TensorStore(object):
             self._keys = db.list_dataset_keys()
  
     def __delitem__(self, key: str):
+        """
+        Deletes a tensor from the database with the given key.
+
+        Args:
+            key (str): The unique identifier for the tensor.
+
+        Raises:
+            ValueError: If the tensor with the given key does not exist in the database.
+        """
         with self.backend.database() as db:
             db.remove_dataset(key)
     
-    def __contains__(self, key: str):
+    def __contains__(self, key: str) -> bool:
+        """
+        Checks if a tensor with the given key exists in the database.
+
+        Args:
+            key (str): The unique identifier for the tensor.
+
+        Returns:
+            bool: True if the tensor with the given key exists in the database, False otherwise.
+        """
         # get the keys
         keys = self.keys()
 
         # check if key is in keys
         return key in keys
     
-    def __len__(self):
+    def __len__(self) -> int:
+        """
+        Returns the number of dataset keys in the database.
+
+        Returns:
+            int: The number of dataset keys in the database.
+        """
         # get the keys
         keys = self.keys()
 
@@ -158,6 +271,12 @@ class TensorStore(object):
         return len(keys)
 
     def keys(self) -> List[str]:
+        """
+        Retrieves a list of all dataset keys in the database.
+
+        Returns:
+            List[str]: A list of all dataset keys in the database.
+        """
         # get the keys from the database
         with self.backend.database() as db:
             keys = db.list_dataset_keys()
@@ -170,6 +289,15 @@ class TensorStore(object):
 
 @dataclass
 class StoreSlicer:
+    """
+    A class representing a slicer for a tensor store.
+
+    Args:
+        _store (TensorStore): The tensor store to slice.
+        key (str): The key of the tensor to slice.
+        dataset (Optional[Dataset]): The dataset to slice.
+
+    """
     _store: TensorStore = field(repr=False)
     key: str
     dataset: Optional[Dataset] = field(default=None, repr=False)
@@ -180,7 +308,18 @@ class StoreSlicer:
                 self.dataset = db.get_dataset(self.key)
 
     def get_iloc_slices(self, *args: Union[int, Tuple[int], slice]) -> Tuple[str, Tuple[int, int], List[Tuple[int, int]]]:
-        # check the length of the args
+        """
+        Retrieves the index ranges to select from the tensor with the given key and iloc-style arguments.
+
+        Args:
+            *args (Union[int, Tuple[int], slice]): The iloc-style arguments to use for selecting the tensor data.
+
+        Returns:
+            Tuple[str, Tuple[int, int], List[Tuple[int, int]]]: A tuple containing the key, the shape of the tensor, and a list of index ranges to select.
+
+        Raises:
+            ValueError: If the tensor with the given key does not exist in the database.
+        """        # check the length of the args
         if len(args) == 0:
             # use the dataset to load the full sample
             return (
@@ -225,7 +364,18 @@ class StoreSlicer:
         )
     
     def __getitem__(self, args: Union[int, Tuple[int], slice]) -> np.ndarray:
-        # get the slices
+        """
+        Retrieves a tensor from the database with the given iloc-style arguments.
+
+        Args:
+            args (Union[int, Tuple[int], slice]): The iloc-style arguments to use for selecting the tensor data.
+
+        Returns:
+            np.ndarray: The tensor data with the given iloc-style arguments.
+
+        Raises:
+            ValueError: If the tensor with the given key does not exist in the database.
+        """        # get the slices
         _, index, slices = self.get_iloc_slices(*args)
 
         # load the tensor
@@ -237,4 +387,16 @@ class StoreSlicer:
         return arr
 
     def __call__(self, *args: Union[int, Tuple[int], slice]) -> Tuple[str, Tuple[int, int], List[Tuple[int, int]]]:
+        """
+        Retrieves the index ranges to select from the tensor with the given iloc-style arguments.
+
+        Args:
+            *args (Union[int, Tuple[int], slice]): The iloc-style arguments to use for selecting the tensor data.
+
+        Returns:
+            Tuple[str, Tuple[int, int], List[Tuple[int, int]]]: A tuple containing the key, the shape of the tensor, and a list of index ranges to select.
+
+        Raises:
+            ValueError: If the tensor with the given key does not exist in the database.
+        """
         return self.get_iloc_slices(*args)
