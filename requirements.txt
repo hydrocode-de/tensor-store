@@ -1,4 +1,5 @@
 supabase
 python-dotenv
 numpy
+xarray
 tqdm
