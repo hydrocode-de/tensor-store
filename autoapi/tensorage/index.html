@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>tensorage &#8212; TensOrage 0.1.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=14711e05"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="tensorage.backend" href="backend/index.html" />
+    <link rel="prev" title="API Reference" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-tensorage">
+<span id="tensorage"></span><h1><a class="reference internal" href="#module-tensorage" title="tensorage"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage</span></code></a><a class="headerlink" href="#module-tensorage" title="Permalink to this heading">¶</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="backend/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.backend</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="backend/base/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.backend.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend/database/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.backend.database</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend/storage/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.backend.storage</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sql/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.sql</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sql/sql/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.sql.sql</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="__version__/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.__version__</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="auth/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.auth</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="session/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.session</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="store/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.store</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="types/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.types</span></code></a></li>
+</ul>
+</div>
+</section>
+<section id="package-contents">
+<h2>Package Contents<a class="headerlink" href="#package-contents" title="Permalink to this heading">¶</a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tensorage.login" title="tensorage.login"><code class="xref py py-obj docutils literal notranslate"><span class="pre">login</span></code></a>(→ tensorage.store.TensorStore)</p></td>
+<td><p>Log in to the Supabase backend using email and password authentication.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#tensorage.signup" title="tensorage.signup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">signup</span></code></a>(→ gotrue.types.AuthResponse)</p></td>
+<td><p>Sign up a new user to the Supabase backend using email and password authentication.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tensorage.__version__" title="tensorage.__version__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__version__</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="tensorage.__version__">
+<span class="sig-prename descclassname"><span class="pre">tensorage.</span></span><span class="sig-name descname"><span class="pre">__version__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'0.1.3'</span></em><a class="headerlink" href="#tensorage.__version__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tensorage.login">
+<span class="sig-prename descclassname"><span class="pre">tensorage.</span></span><span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="store/index.html#tensorage.store.TensorStore" title="tensorage.store.TensorStore"><span class="pre">tensorage.store.TensorStore</span></a></span></span><a class="headerlink" href="#tensorage.login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log in to the Supabase backend using email and password authentication.</p>
+<p>This function creates a <cite>BackendSession</cite> object using the provided backend URL and key, or the default values if none are provided. It then logs in to the backend session using the provided email and password. If the login is successful, it returns the tensor store instance for the backend session.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>email</strong> – The email address of the user to log in.</p></li>
+<li><p><strong>password</strong> – The password of the user to log in.</p></li>
+<li><p><strong>backend_url</strong> – The URL of the Supabase backend. Defaults to <cite>None</cite>.</p></li>
+<li><p><strong>backend_key</strong> – The API key for the Supabase backend. Defaults to <cite>None</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The tensor store instance for the backend session.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>RuntimeError</strong> – If the login fails.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tensorage.signup">
+<span class="sig-prename descclassname"><span class="pre">tensorage.</span></span><span class="sig-name descname"><span class="pre">signup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gotrue.types.AuthResponse</span></span></span><a class="headerlink" href="#tensorage.signup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sign up a new user to the Supabase backend using email and password authentication.</p>
+<p>This function creates a <cite>BackendSession</cite> object using the provided backend URL and key, or the default values if none are provided. It then signs up a new user to the backend session using the provided email and password. If the signup is successful, it returns an <cite>AuthResponse</cite> object containing the user’s access token and refresh token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>email</strong> – The email address of the user to sign up.</p></li>
+<li><p><strong>password</strong> – The password of the user to sign up.</p></li>
+<li><p><strong>backend_url</strong> – The URL of the Supabase backend. Defaults to <cite>None</cite>.</p></li>
+<li><p><strong>backend_key</strong> – The API key for the Supabase backend. Defaults to <cite>None</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An <cite>AuthResponse</cite> object containing the user’s access token and refresh token.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>RuntimeError</strong> – If the signup fails.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">TensOrage</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">API Reference</a><ul>
+      <li>Previous: <a href="../index.html" title="previous chapter">API Reference</a></li>
+      <li>Next: <a href="backend/index.html" title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.backend</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Mirko Mälicke.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="../../_sources/autoapi/tensorage/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

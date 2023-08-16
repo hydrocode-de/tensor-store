@@ -1,0 +1,55 @@
+:py:mod:`tensorage.types`
+=========================
+
+.. py:module:: tensorage.types
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   tensorage.types.Dataset
+
+
+
+
+.. py:class:: Dataset
+
+
+   Bases: :py:obj:`object`
+
+   .. py:attribute:: id
+      :type: int
+
+      
+
+   .. py:attribute:: key
+      :type: str
+
+      
+
+   .. py:attribute:: shape
+      :type: Tuple[int]
+
+      
+
+   .. py:attribute:: ndim
+      :type: int
+
+      
+
+   .. py:attribute:: type
+      :type: str
+
+      
+
+   .. py:attribute:: is_shared
+      :type: bool
+
+      
+
+

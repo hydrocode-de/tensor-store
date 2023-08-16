@@ -1,0 +1,38 @@
+:py:mod:`tensorage.sql.sql`
+===========================
+
+.. py:module:: tensorage.sql.sql
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   tensorage.sql.sql.get_script
+   tensorage.sql.sql.INIT
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   tensorage.sql.sql.BASE_PATH
+
+
+.. py:data:: BASE_PATH
+
+   
+
+.. py:function:: get_script(name: str) -> str
+
+
+.. py:function:: INIT() -> str
+
+

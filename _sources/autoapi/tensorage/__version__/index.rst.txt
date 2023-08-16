@@ -1,0 +1,14 @@
+:py:mod:`tensorage.__version__`
+===============================
+
+.. py:module:: tensorage.__version__
+
+
+Module Contents
+---------------
+
+.. py:data:: __version__
+   :value: '0.1.3'
+
+   
+

@@ -1,0 +1,81 @@
+:py:mod:`tensorage.backend.base`
+================================
+
+.. py:module:: tensorage.backend.base
+
+.. autoapi-nested-parse::
+
+   This module provides the base context class for working with tensors and datasets in Supabase.
+
+   It provides a `BaseContext` class that defines the interface for working with tensors and datasets in Supabase.
+   This class is designed to be subclassed by specific implementations of the Supabase backend, such as the `DatabaseContext` class.
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   tensorage.backend.base.BaseContext
+
+
+
+
+.. py:class:: BaseContext
+
+
+   Bases: :py:obj:`abc.ABC`
+
+   Helper class that provides a standard way to create an ABC using
+   inheritance.
+
+   .. py:property:: user_id
+      :type: str
+
+
+   .. py:attribute:: backend
+      :type: tensorage.session.BackendSession
+
+      
+
+   .. py:attribute:: _anon_key
+      :type: str
+
+      
+
+   .. py:method:: get_dataset(key: str) -> tensorage.types.Dataset
+      :abstractmethod:
+
+
+   .. py:method:: get_tensor(key: str, index_low: int, index_up: int, slice_low: List[int], slice_up: List[int]) -> numpy.ndarray
+      :abstractmethod:
+
+
+   .. py:method:: insert_dataset(key: str, shape: Tuple[int], dim: int, type: str, is_shared: bool) -> tensorage.types.Dataset
+      :abstractmethod:
+
+
+   .. py:method:: insert_tensor(data_id: int, data: List[numpy.ndarray], offset: int = 0) -> bool
+      :abstractmethod:
+
+
+   .. py:method:: append_tensor(data_id: int, data: List[numpy.ndarray]) -> bool
+      :abstractmethod:
+
+
+   .. py:method:: remove_dataset(key: str) -> bool
+      :abstractmethod:
+
+
+   .. py:method:: list_dataset_keys() -> List[str]
+      :abstractmethod:
+
+
+   .. py:method:: __del__()
+
+
+

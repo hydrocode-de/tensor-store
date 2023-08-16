@@ -1,0 +1,278 @@
+:py:mod:`tensorage.store`
+=========================
+
+.. py:module:: tensorage.store
+
+.. autoapi-nested-parse::
+
+   This module defines the TensorStore class which is responsible for storing and retrieving tensor data from a Supabase backend.
+   The store can be accessed by using Pythons set and get item methods. Additionally, all dataset keys are also available
+   as attributes of the store object.
+   The store supports numpy-style slicing and as of now accepts and returns numpy arrays.
+
+   .. rubric:: Example
+
+   .. code-block:: python
+       # login
+       store = login('email', 'password')
+
+       # insert a new dataset into the store
+       store['my_dataset'] = np.random.random((500, 10, 10))
+
+       # retrieve tensor slice data from the store
+       first_twelve = store.my_dataset[0:12]
+
+       # series of subset
+       subset = store['my_dataset', :, 4, 4].flatten()
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   tensorage.store.TensorStore
+   tensorage.store.StoreSlicer
+
+
+
+
+.. py:class:: TensorStore
+
+
+   Bases: :py:obj:`object`
+
+   A class representing a tensor store for storing and retrieving tensor data from a backend.
+
+   :param backend_session: The backend session to use for interacting with the backend.
+   :type backend_session: BackendSession
+
+   .. attribute:: backend
+
+      The backend session to use for interacting with the backend.
+
+      :type: BackendSession
+
+   .. attribute:: quiet
+
+      Whether to suppress output messages or not.
+
+      :type: bool
+
+   .. attribute:: engine
+
+      The engine to use for storing and retrieving tensor data.
+
+      :type: str
+
+   .. attribute:: chunk_size
+
+      The chunk size to use for uploading tensor data.
+
+      :type: int
+
+   :raises ValueError: If the backend session is not provided.
+
+   .. py:attribute:: backend
+      :type: tensorage.session.BackendSession
+
+      
+
+   .. py:attribute:: quiet
+      :type: bool
+
+      
+
+   .. py:attribute:: engine
+      :type: Union[typing_extensions.Literal[database], typing_extensions.Literal[storage]]
+
+      
+
+   .. py:attribute:: chunk_size
+      :type: int
+
+      
+
+   .. py:attribute:: _keys
+      :type: List[str]
+
+      
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: get_context()
+      :abstractmethod:
+
+
+   .. py:method:: get_select_indices(key: Union[str, Tuple[Union[str, slice, int]]]) -> Tuple[str, Tuple[int, int], List[Tuple[int, int]]]
+
+      Retrieves the select indices for the given key from the database.
+
+      :param key: The unique identifier for the tensor or a tuple of slice objects.
+      :type key: Union[str, Tuple[Union[str, slice, int]]]
+
+      :returns: A tuple containing the key, the shape of the tensor, and a list of index ranges to select.
+      :rtype: Tuple[str, Tuple[int, int], List[Tuple[int, int]]]
+
+      :raises ValueError: If the tensor with the given key does not exist in the database.
+
+
+   .. py:method:: __getitem__(key: Union[str, Tuple[Union[str, slice, int]]]) -> numpy.ndarray
+
+      Retrieves a tensor from the database with the given key or slice.
+
+      :param key: The unique identifier for the tensor or a tuple of slice objects.
+      :type key: Union[str, Tuple[Union[str, slice, int]]]
+
+      :returns: The tensor data with the given key or slice.
+      :rtype: np.ndarray
+
+      :raises ValueError: If the tensor with the given key does not exist in the database.
+
+
+   .. py:method:: __getattr__(key: str) -> Any
+
+      Instantiate a Slicer with the passed attribute used as dataset key.
+
+      :param key: The key of the attribute to retrieve.
+      :type key: str
+
+      :returns: The value of the attribute with the given key.
+      :rtype: Any
+
+      :raises AttributeError: If the attribute with the given key does not exist in the backend session.
+
+
+   .. py:method:: __dir__() -> List[str]
+
+      Returns a list of all attributes and methods of the TensorStore object.
+
+      :returns: A list of all attributes and methods of the TensorStore object.
+      :rtype: List[str]
+
+
+   .. py:method:: __setitem__(key: str, value: Union[List[list], numpy.ndarray])
+
+      Uploads a dataset into the backend with the given key and value.
+
+      :param key: The unique identifier for the tensor.
+      :type key: str
+      :param value: The tensor data to be set.
+      :type value: Union[List[list], np.ndarray]
+
+      :raises ValueError: If the tensor with the given key does not exist in the database.
+
+
+   .. py:method:: __delitem__(key: str)
+
+      Deletes a tensor from the database with the given key.
+
+      :param key: The unique identifier for the tensor.
+      :type key: str
+
+      :raises ValueError: If the tensor with the given key does not exist in the database.
+
+
+   .. py:method:: __contains__(key: str) -> bool
+
+      Checks if a tensor with the given key exists in the database.
+
+      :param key: The unique identifier for the tensor.
+      :type key: str
+
+      :returns: True if the tensor with the given key exists in the database, False otherwise.
+      :rtype: bool
+
+
+   .. py:method:: __len__() -> int
+
+      Returns the number of dataset keys in the database.
+
+      :returns: The number of dataset keys in the database.
+      :rtype: int
+
+
+   .. py:method:: keys() -> List[str]
+
+      Retrieves a list of all dataset keys in the database.
+
+      :returns: A list of all dataset keys in the database.
+      :rtype: List[str]
+
+
+
+.. py:class:: StoreSlicer
+
+
+   A class representing a slicer for a tensor store.
+
+   :param _store: The tensor store to slice.
+   :type _store: TensorStore
+   :param key: The key of the tensor to slice.
+   :type key: str
+   :param dataset: The dataset to slice.
+   :type dataset: Optional[Dataset]
+
+   .. py:attribute:: _store
+      :type: TensorStore
+
+      
+
+   .. py:attribute:: key
+      :type: str
+
+      
+
+   .. py:attribute:: dataset
+      :type: Optional[tensorage.types.Dataset]
+
+      
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: get_iloc_slices(*args: Union[int, Tuple[int], slice]) -> Tuple[str, Tuple[int, int], List[Tuple[int, int]]]
+
+      Retrieves the index ranges to select from the tensor with the given key and iloc-style arguments.
+
+      :param \*args: The iloc-style arguments to use for selecting the tensor data.
+      :type \*args: Union[int, Tuple[int], slice]
+
+      :returns: A tuple containing the key, the shape of the tensor, and a list of index ranges to select.
+      :rtype: Tuple[str, Tuple[int, int], List[Tuple[int, int]]]
+
+      :raises ValueError: If the tensor with the given key does not exist in the database.
+
+
+   .. py:method:: __getitem__(args: Union[int, Tuple[int], slice]) -> numpy.ndarray
+
+      Retrieves a tensor from the database with the given iloc-style arguments.
+
+      :param args: The iloc-style arguments to use for selecting the tensor data.
+      :type args: Union[int, Tuple[int], slice]
+
+      :returns: The tensor data with the given iloc-style arguments.
+      :rtype: np.ndarray
+
+      :raises ValueError: If the tensor with the given key does not exist in the database.
+
+
+   .. py:method:: __call__(*args: Union[int, Tuple[int], slice]) -> Tuple[str, Tuple[int, int], List[Tuple[int, int]]]
+
+      Retrieves the index ranges to select from the tensor with the given iloc-style arguments.
+
+      :param \*args: The iloc-style arguments to use for selecting the tensor data.
+      :type \*args: Union[int, Tuple[int], slice]
+
+      :returns: A tuple containing the key, the shape of the tensor, and a list of index ranges to select.
+      :rtype: Tuple[str, Tuple[int, int], List[Tuple[int, int]]]
+
+      :raises ValueError: If the tensor with the given key does not exist in the database.
+
+
+

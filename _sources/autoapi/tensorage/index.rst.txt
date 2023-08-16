@@ -1,0 +1,84 @@
+:py:mod:`tensorage`
+===================
+
+.. py:module:: tensorage
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   backend/index.rst
+   sql/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   __version__/index.rst
+   auth/index.rst
+   session/index.rst
+   store/index.rst
+   types/index.rst
+
+
+Package Contents
+----------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   tensorage.login
+   tensorage.signup
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   tensorage.__version__
+
+
+.. py:data:: __version__
+   :value: '0.1.3'
+
+   
+
+.. py:function:: login(email: str, password: str, backend_url: Optional[str] = None, backend_key: Optional[str] = None) -> tensorage.store.TensorStore
+
+   Log in to the Supabase backend using email and password authentication.
+
+   This function creates a `BackendSession` object using the provided backend URL and key, or the default values if none are provided. It then logs in to the backend session using the provided email and password. If the login is successful, it returns the tensor store instance for the backend session.
+
+   :param email: The email address of the user to log in.
+   :param password: The password of the user to log in.
+   :param backend_url: The URL of the Supabase backend. Defaults to `None`.
+   :param backend_key: The API key for the Supabase backend. Defaults to `None`.
+   :return: The tensor store instance for the backend session.
+   :raises RuntimeError: If the login fails.
+
+
+.. py:function:: signup(email: str, password: str, backend_url: Optional[str] = None, backend_key: Optional[str] = None) -> gotrue.types.AuthResponse
+
+   Sign up a new user to the Supabase backend using email and password authentication.
+
+   This function creates a `BackendSession` object using the provided backend URL and key, or the default values if none are provided. It then signs up a new user to the backend session using the provided email and password. If the signup is successful, it returns an `AuthResponse` object containing the user's access token and refresh token.
+
+   :param email: The email address of the user to sign up.
+   :param password: The password of the user to sign up.
+   :param backend_url: The URL of the Supabase backend. Defaults to `None`.
+   :param backend_key: The API key for the Supabase backend. Defaults to `None`.
+   :return: An `AuthResponse` object containing the user's access token and refresh token.
+   :raises RuntimeError: If the signup fails.
+
+

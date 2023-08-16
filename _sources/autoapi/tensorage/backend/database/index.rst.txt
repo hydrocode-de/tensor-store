@@ -1,0 +1,160 @@
+:py:mod:`tensorage.backend.database`
+====================================
+
+.. py:module:: tensorage.backend.database
+
+.. autoapi-nested-parse::
+
+   This module defines the DatabaseContext class which is responsible for interacting with the Supabase backend and its underlying Postgres database.
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   tensorage.backend.database.DatabaseContext
+
+
+
+
+.. py:class:: DatabaseContext
+
+
+   Bases: :py:obj:`tensorage.backend.base.BaseContext`
+
+   A class representing a database context for interacting with the Supabase backend and its underlying Postgres database.
+
+   .. py:method:: __setup_auth()
+
+      Sets up the authentication for the Supabase client using the provided API key and URL.
+
+      :raises ValueError: If the API key or URL is not provided.
+
+
+   .. py:method:: __restore_auth()
+
+      Restores the authentication for the Supabase client using the stored anonymous key.
+
+      :raises ValueError: If the session token is not provided.
+
+
+   .. py:method:: check_schema_installed() -> bool
+
+      Checks if the required schema is installed in the database.
+      Right now, only the tables 'datasets' and 'tensors_float4' are checked for exitence.
+
+      :returns: True if the schema is installed, False otherwise.
+      :rtype: bool
+
+
+   .. py:method:: insert_dataset(key: str, shape: Tuple[int], dim: int) -> tensorage.types.Dataset
+
+      Inserts a new dataset into the database with the given key, shape, and dimension.
+
+      :param key: The unique identifier for the dataset.
+      :type key: str
+      :param shape: The shape of the dataset.
+      :type shape: Tuple[int]
+      :param dim: The dimension of the dataset.
+      :type dim: int
+
+      :returns: The newly created dataset object.
+      :rtype: Dataset
+
+
+   .. py:method:: insert_tensor(data_id: int, data: List[numpy.ndarray], offset: int = 0) -> bool
+
+      Inserts a tensor into the database with the given data ID, data, and offset.
+      The offset is the position along the main (first) axis, at with the chunks given
+      as data should be inserted.
+
+      :param data_id: The unique identifier for the tensor data.
+      :type data_id: int
+      :param data: The tensor data to be inserted.
+      :type data: List[np.ndarray]
+      :param offset: The offset to start inserting the tensor data.
+      :type offset: int
+
+      :returns: True if the tensor data was successfully inserted, False otherwise.
+      :rtype: bool
+
+
+   .. py:method:: get_dataset(key: str) -> tensorage.types.Dataset
+
+      Retrieves the dataset with the given key from the database.
+
+      :param key: The unique identifier for the dataset.
+      :type key: str
+
+      :returns: The dataset object with the given key.
+      :rtype: Dataset
+
+      :raises ValueError: If the dataset with the given key does not exist in the database.
+
+
+   .. py:method:: get_tensor(key: str, index_low: int, index_up: int, slice_low: List[int], slice_up: List[int]) -> numpy.ndarray
+
+      Retrieves a tensor from the database with the given key, index range, and slice range.
+      The index is the numeric index along the main axis, while the slice is marking the index ranges
+      along the other axes. Please note, that all existing axes have to be covered, even if all data
+      is requested.
+
+      :param key: The unique identifier for the tensor.
+      :type key: str
+      :param index_low: The lower index bound for the tensor.
+      :type index_low: int
+      :param index_up: The upper index bound for the tensor.
+      :type index_up: int
+      :param slice_low: The lower slice bound for the tensor.
+      :type slice_low: List[int]
+      :param slice_up: The upper slice bound for the tensor.
+      :type slice_up: List[int]
+
+      :returns: The tensor data with the given key, index range, and slice range.
+      :rtype: np.ndarray
+
+      :raises ValueError: If the tensor with the given key does not exist in the database.
+
+
+   .. py:method:: remove_dataset(key: str) -> bool
+
+      Removes the dataset with the given key from the database.
+
+      :param key: The unique identifier for the dataset.
+      :type key: str
+
+      :returns: True if the dataset was successfully removed, False otherwise.
+      :rtype: bool
+
+      :raises ValueError: If the dataset with the given key does not exist in the database.
+
+
+   .. py:method:: list_dataset_keys() -> List[str]
+
+      Retrieves a list of all dataset keys in the database.
+
+      :returns: A list of all dataset keys in the database.
+      :rtype: List[str]
+
+
+   .. py:method:: append_tensor(data_id: int, data: List[numpy.ndarray]) -> bool
+
+      Appends a tensor to the existing tensor data with the given data ID.
+
+      :param data_id: The unique identifier for the tensor data.
+      :type data_id: int
+      :param data: The tensor data to be appended.
+      :type data: List[np.ndarray]
+
+      :returns: True if the tensor data was successfully appended, False otherwise.
+      :rtype: bool
+
+      :raises ValueError: If the tensor data with the given ID does not exist in the database.
+
+
+

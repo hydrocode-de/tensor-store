@@ -1,0 +1,64 @@
+:py:mod:`tensorage.backend.storage`
+===================================
+
+.. py:module:: tensorage.backend.storage
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   tensorage.backend.storage.StorageContext
+
+
+
+
+.. py:class:: StorageContext
+
+
+   Bases: :py:obj:`tensorage.backend.base.BaseContext`
+
+   Helper class that provides a standard way to create an ABC using
+   inheritance.
+
+   .. py:method:: __setup_auth()
+
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: __restore_auth()
+
+
+   .. py:method:: _create_user_bucket() -> bool
+
+
+   .. py:method:: has_bucket() -> bool
+
+
+   .. py:method:: get_dataset(key: str) -> tensorage.types.Dataset
+
+
+   .. py:method:: get_tensor(key: str, index_low: int, index_up: int, slice_low: List[int], slice_up: List[int]) -> numpy.ndarray
+
+
+   .. py:method:: insert_dataset(key: str, shape: Tuple[int], dim: int, type: str, is_shared: bool) -> tensorage.types.Dataset
+
+
+   .. py:method:: insert_tensor(data_id: int, data: List[numpy.ndarray], offset: int = 0) -> bool
+
+
+   .. py:method:: append_tensor(data_id: int, data: List[numpy.ndarray]) -> bool
+
+
+   .. py:method:: remove_dataset(key: str) -> bool
+
+
+   .. py:method:: list_dataset_keys() -> List[str]
+
+
+
