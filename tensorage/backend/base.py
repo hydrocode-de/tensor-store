@@ -1,3 +1,10 @@
+"""
+This module provides the base context class for working with tensors and datasets in Supabase.
+
+It provides a `BaseContext` class that defines the interface for working with tensors and datasets in Supabase.
+This class is designed to be subclassed by specific implementations of the Supabase backend, such as the `DatabaseContext` class.
+
+"""
 from typing import TYPE_CHECKING, List, Tuple
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
