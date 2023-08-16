@@ -8,7 +8,7 @@ jobs:
     runs-on: ${{ matrix.os-version }}
     strategy:
       matrix:
-        python-version: [ '3.7', '3.8', '3.9', '3.10', '3.11' ]
+        python-version: [ '3.8', '3.9', '3.10', '3.11' ]
         os-version: [ ubuntu-latest ]
 
     steps:
@@ -66,7 +66,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/_build/html
+          publish_dir: ./docs/build/html
 
   deploy:
     name: Publish to PyPI
