@@ -76,7 +76,7 @@ Attributes
       
 
    .. py:attribute:: Context
-      :type: type[C]
+      :type: Type[C]
 
       
 
