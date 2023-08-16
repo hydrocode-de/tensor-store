@@ -16,7 +16,7 @@ Example:
 
 """
 
-from typing import Any, TypeVar, Generic
+from typing import Any, TypeVar, Generic, Type
 from dataclasses import dataclass, field
 
 from supabase import Client, create_client
@@ -53,7 +53,7 @@ class ContextWrapper(Generic[C]):
 
     """
     _session: 'BackendSession'
-    Context: type[C]
+    Context: Type[C]
 
     def __enter__(self) -> C:
         """
