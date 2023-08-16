@@ -44,7 +44,7 @@ jobs:
   
   docs:
     name: Build docs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu
     
     steps:
       - uses: actions/checkout@v3
@@ -70,7 +70,7 @@ jobs:
 
   deploy:
     name: Publish to PyPI
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu
     if: startsWith(github.event.ref, 'refs/tags/v')
 
     steps:
