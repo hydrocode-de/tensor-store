@@ -1,3 +1,4 @@
+typing_extensions
 supabase
 python-dotenv
 numpy
