@@ -3,6 +3,11 @@
 
 .. py:module:: tensorage
 
+.. autoapi-nested-parse::
+
+   TensOrage is a Python library for storing tensor data into a Supabase backend database.
+
+
 
 Subpackages
 -----------
