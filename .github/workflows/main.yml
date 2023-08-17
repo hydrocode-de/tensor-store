@@ -1,6 +1,7 @@
 name: Test and deploy
 
-on: push
+# run on push to main or on pull request to main
+on: [push, pull_request]
 
 jobs:
   tests:
@@ -48,6 +49,7 @@ jobs:
   docs:
     name: Build docs
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     
     steps:
       - uses: actions/checkout@v3
@@ -93,3 +95,16 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
+  
+  release:
+    name: Create Github Release
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.ref, 'refs/tags/v') && endsWith(github.event.ref, '.0')
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: RELEASE.md
+          generate_release_notes: true
