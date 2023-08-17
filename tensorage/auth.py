@@ -5,7 +5,8 @@ It provides a `BackendSession` class for managing backend sessions, as well as u
 
 """
 
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union, overload
+from typing_extensions import Literal
 import os
 import json
 
@@ -16,10 +17,10 @@ from .session import BackendSession
 
 
 # supabase connection file
-SUPA_FILE = os.path.join(os.path.dirname(__file__), '.supabase.env')
+SUPA_FILE = os.path.join(os.path.expanduser('~'), '.tensorage.conf')
 
 
-def __get_auth_info(backend_url: Optional[str], backend_key: Optional[str] = None) -> Tuple[str, str]:
+def __get_auth_info(backend_url: Optional[str], backend_key: Optional[str] = None, email: Optional[str] = None, password: Optional[str] = None) -> Tuple[str, str, str, str]:
     """
     Get the Supabase connection information.
 
@@ -27,6 +28,8 @@ def __get_auth_info(backend_url: Optional[str], backend_key: Optional[str] = Non
 
     :param backend_url: The URL of the Supabase backend.
     :param backend_key: The API key for the Supabase backend.
+    :param email: The email address of the user to log in.
+    :param password: The password of the user to log in.
     :return: A tuple of the backend URL and backend key.
     """
     # check if we saved persisted connection information
@@ -42,16 +45,64 @@ def __get_auth_info(backend_url: Optional[str], backend_key: Optional[str] = Non
     
     if backend_key is None:
         backend_key = persisted.get('SUPABASE_KEY', os.environ.get('SUPABASE_KEY'))
+    
+    if email is None:
+        email = persisted.get('USER_EMAIL', os.environ.get('USER_EMAIL'))
+    
+    if password is None:
+        password = persisted.get('USER_PASSWORD', os.environ.get('USER_PASSWORD'))
 
     # the supabase key may be None, we raise an exception in that case
     if backend_key is None:
         raise RuntimeError('SUPABASE_KEY environment variable not set and no KEY has been persisted.')
     
     # if there was no error, return
-    return backend_url, backend_key
+    return backend_url, backend_key, email, password
 
 
-def login(email: str, password: str, backend_url: Optional[str] = None, backend_key: Optional[str] = None) -> TensorStore:
+@overload
+def link_to(backend_url: str, backend_key: str) -> Literal[True]:
+    ...
+@overload
+def link_to(backend_url: str, backend_key: str, password: str, email: str) -> TensorStore:
+    ...
+def link_to(backend_url: str, backend_key: str, password: Optional[str] = None, email: Optional[str] = None) -> Union[Literal[True], TensorStore]:
+    """
+    Link to a Supabase backend using the provided backend URL and key.
+
+    If a password and email are provided, logs in to the backend using the provided credentials.
+
+    Args:
+        backend_url (str): The URL of the Supabase backend to link to.
+        backend_key (str): The key of the Supabase backend to link to.
+        password (Optional[str]): The password to use for logging in to the backend. Defaults to None.
+        email (Optional[str]): The email to use for logging in to the backend. Defaults to None.
+
+    Returns:
+        Union[True, TensorStore]: If no credentials are provided, returns True. If credentials are provided, returns a TensorStore object representing the linked backend.
+
+    Raises:
+        ValueError: If the backend URL or key are not provided.
+        AuthenticationError: If the provided credentials are invalid.
+    """
+    # create the dict of connection information
+    if password is not None and email is not None:
+        persisted = dict(SUPABASE_URL=backend_url, SUPABASE_KEY=backend_key, USER_EMAIL=email, USER_PASSWORD=password)
+    else:
+        persisted = dict(SUPABASE_URL=backend_url, SUPABASE_KEY=backend_key)
+
+    # create or overwrite the SUPA_FILE
+    with open(SUPA_FILE, 'w') as f:
+        json.dump(persisted, f)
+    
+    # if the user provided a password and email, we log in
+    if password is not None and email is not None:
+        return login(email, password, backend_url, backend_key)
+    else:
+        return True
+
+
+def login(email: Optional[str] = None, password: Optional[str] = None, backend_url: Optional[str] = None, backend_key: Optional[str] = None) -> TensorStore:
     """
     Log in to the Supabase backend using email and password authentication.
 
@@ -65,7 +116,11 @@ def login(email: str, password: str, backend_url: Optional[str] = None, backend_
     :raises RuntimeError: If the login fails.
     """
     # get the environment variables
-    backend_url, backend_key = __get_auth_info(backend_url=backend_url, backend_key=backend_key)
+    backend_url, backend_key, email, password = __get_auth_info(backend_url=backend_url, backend_key=backend_key, email=email, password=password)
+    
+    # check that email and password are supplied
+    if email is None or password is None:
+        raise RuntimeError(f"Email and password are not saved in {SUPA_FILE} and must therfore be supplied for login.")
     
     # get a session
     session = BackendSession(email, password, backend_url, backend_key)

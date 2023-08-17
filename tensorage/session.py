@@ -150,23 +150,14 @@ class BackendSession(object):
             self._client = create_client(self.backend_url, self.backend_key)
         return self._client
 
-    def login_by_mail(self, email: str, password: str) -> AuthResponse:
+    def login_by_mail(self) -> AuthResponse:
         """
         Log in to the backend using email and password.
 
         This method logs in to the backend using the `auth.sign_in` method of the `supabase.Client` instance. 
-        It takes an email and password as arguments, and returns an `AuthResponse` object 
+        Email and password are used from the `BackendSession` object, and returns an `AuthResponse` object 
         containing the authentication token and user information.
 
-        Example:
-            .. code-block:: python
-
-                session = BackendSession()
-                response = session.login_by_mail('user@example.com', 'password')
-                print(response)
-
-        :param email: The email address of the user.
-        :param password: The password of the user.
         :return: An `AuthResponse` object containing the authentication token and user information.
         """
         # login
