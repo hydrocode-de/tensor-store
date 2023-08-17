@@ -194,24 +194,14 @@ Attributes
 
       
 
-   .. py:method:: login_by_mail(email: str, password: str) -> gotrue.types.AuthResponse
+   .. py:method:: login_by_mail() -> gotrue.types.AuthResponse
 
       Log in to the backend using email and password.
 
       This method logs in to the backend using the `auth.sign_in` method of the `supabase.Client` instance.
-      It takes an email and password as arguments, and returns an `AuthResponse` object
+      Email and password are used from the `BackendSession` object, and returns an `AuthResponse` object
       containing the authentication token and user information.
 
-      .. rubric:: Example
-
-      .. code-block:: python
-
-          session = BackendSession()
-          response = session.login_by_mail('user@example.com', 'password')
-          print(response)
-
-      :param email: The email address of the user.
-      :param password: The password of the user.
       :return: An `AuthResponse` object containing the authentication token and user information.
 
 

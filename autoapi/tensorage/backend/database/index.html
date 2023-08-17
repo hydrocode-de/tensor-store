@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -9,9 +9,9 @@
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=4f649999" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css?v=039e1c02" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=14711e05"></script>
+    <script src="../../../../_static/documentation_options.js?v=360bc84d"></script>
     <script src="../../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="tensorage.backend.storage" href="../storage/index.html" />
@@ -32,13 +32,13 @@
 
           <div class="body" role="main">
             
-  <section id="module-tensorage.backend.database">
-<span id="tensorage-backend-database"></span><h1><a class="reference internal" href="#module-tensorage.backend.database" title="tensorage.backend.database"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.backend.database</span></code></a><a class="headerlink" href="#module-tensorage.backend.database" title="Permalink to this heading">¶</a></h1>
-<p>This module defines the DatabaseContext class which is responsible for interacting with the Supabase backend and its underlying Postgres database.</p>
+  <section id="tensorage-backend-database">
+<h1><a class="reference internal" href="#module-tensorage.backend.database" title="tensorage.backend.database"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.backend.database</span></code></a><a class="headerlink" href="#tensorage-backend-database" title="Link to this heading">¶</a></h1>
+<p id="module-tensorage.backend.database">This module defines the DatabaseContext class which is responsible for interacting with the Supabase backend and its underlying Postgres database.</p>
 <section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">¶</a></h2>
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
 <section id="classes">
-<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this heading">¶</a></h3>
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tensorage.backend.database.DatabaseContext" title="tensorage.backend.database.DatabaseContext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DatabaseContext</span></code></a></p></td>
@@ -48,12 +48,12 @@
 </table>
 <dl class="py class">
 <dt class="sig sig-object py" id="tensorage.backend.database.DatabaseContext">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tensorage.backend.database.</span></span><span class="sig-name descname"><span class="pre">DatabaseContext</span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tensorage.backend.database.</span></span><span class="sig-name descname"><span class="pre">DatabaseContext</span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../base/index.html#tensorage.backend.base.BaseContext" title="tensorage.backend.base.BaseContext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tensorage.backend.base.BaseContext</span></code></a></p>
 <p>A class representing a database context for interacting with the Supabase backend and its underlying Postgres database.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tensorage.backend.database.DatabaseContext.__setup_auth">
-<span class="sig-name descname"><span class="pre">__setup_auth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.__setup_auth" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__setup_auth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.__setup_auth" title="Link to this definition">¶</a></dt>
 <dd><p>Sets up the authentication for the Supabase client using the provided API key and URL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
@@ -64,7 +64,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tensorage.backend.database.DatabaseContext.__restore_auth">
-<span class="sig-name descname"><span class="pre">__restore_auth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.__restore_auth" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__restore_auth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.__restore_auth" title="Link to this definition">¶</a></dt>
 <dd><p>Restores the authentication for the Supabase client using the stored anonymous key.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
@@ -75,7 +75,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tensorage.backend.database.DatabaseContext.check_schema_installed">
-<span class="sig-name descname"><span class="pre">check_schema_installed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.check_schema_installed" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">check_schema_installed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.check_schema_installed" title="Link to this definition">¶</a></dt>
 <dd><p>Checks if the required schema is installed in the database.
 Right now, only the tables ‘datasets’ and ‘tensors_float4’ are checked for exitence.</p>
 <dl class="field-list simple">
@@ -90,7 +90,7 @@ Right now, only the tables ‘datasets’ and ‘tensors_float4’ are checked f
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tensorage.backend.database.DatabaseContext.insert_dataset">
-<span class="sig-name descname"><span class="pre">insert_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../types/index.html#tensorage.types.Dataset" title="tensorage.types.Dataset"><span class="pre">tensorage.types.Dataset</span></a></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.insert_dataset" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">insert_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../types/index.html#tensorage.types.Dataset" title="tensorage.types.Dataset"><span class="pre">tensorage.types.Dataset</span></a></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.insert_dataset" title="Link to this definition">¶</a></dt>
 <dd><p>Inserts a new dataset into the database with the given key, shape, and dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -111,7 +111,7 @@ Right now, only the tables ‘datasets’ and ‘tensors_float4’ are checked f
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tensorage.backend.database.DatabaseContext.insert_tensor">
-<span class="sig-name descname"><span class="pre">insert_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.insert_tensor" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">insert_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.insert_tensor" title="Link to this definition">¶</a></dt>
 <dd><p>Inserts a tensor into the database with the given data ID, data, and offset.
 The offset is the position along the main (first) axis, at with the chunks given
 as data should be inserted.</p>
@@ -134,7 +134,7 @@ as data should be inserted.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tensorage.backend.database.DatabaseContext.get_dataset">
-<span class="sig-name descname"><span class="pre">get_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../types/index.html#tensorage.types.Dataset" title="tensorage.types.Dataset"><span class="pre">tensorage.types.Dataset</span></a></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.get_dataset" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../types/index.html#tensorage.types.Dataset" title="tensorage.types.Dataset"><span class="pre">tensorage.types.Dataset</span></a></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.get_dataset" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves the dataset with the given key from the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -154,7 +154,7 @@ as data should be inserted.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tensorage.backend.database.DatabaseContext.get_tensor">
-<span class="sig-name descname"><span class="pre">get_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_low</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_low</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.get_tensor" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_low</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_low</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.get_tensor" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves a tensor from the database with the given key, index range, and slice range.
 The index is the numeric index along the main axis, while the slice is marking the index ranges
 along the other axes. Please note, that all existing axes have to be covered, even if all data
@@ -183,7 +183,7 @@ is requested.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tensorage.backend.database.DatabaseContext.remove_dataset">
-<span class="sig-name descname"><span class="pre">remove_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.remove_dataset" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">remove_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.remove_dataset" title="Link to this definition">¶</a></dt>
 <dd><p>Removes the dataset with the given key from the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -203,7 +203,7 @@ is requested.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tensorage.backend.database.DatabaseContext.list_dataset_keys">
-<span class="sig-name descname"><span class="pre">list_dataset_keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.list_dataset_keys" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">list_dataset_keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.list_dataset_keys" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves a list of all dataset keys in the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -217,7 +217,7 @@ is requested.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tensorage.backend.database.DatabaseContext.append_tensor">
-<span class="sig-name descname"><span class="pre">append_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.append_tensor" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">append_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.append_tensor" title="Link to this definition">¶</a></dt>
 <dd><p>Appends a tensor to the existing tensor data with the given data ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -310,7 +310,7 @@ is requested.</p>
       &copy;2023, Mirko Mälicke.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |

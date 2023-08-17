@@ -54,7 +54,7 @@ Attributes
 
    
 
-.. py:function:: login(email: str, password: str, backend_url: Optional[str] = None, backend_key: Optional[str] = None) -> tensorage.store.TensorStore
+.. py:function:: login(email: Optional[str] = None, password: Optional[str] = None, backend_url: Optional[str] = None, backend_key: Optional[str] = None) -> tensorage.store.TensorStore
 
    Log in to the Supabase backend using email and password authentication.
 

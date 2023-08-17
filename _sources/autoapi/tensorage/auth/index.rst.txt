@@ -21,6 +21,7 @@ Functions
 .. autoapisummary::
 
    tensorage.auth.__get_auth_info
+   tensorage.auth.link_to
    tensorage.auth.login
    tensorage.auth.signup
 
@@ -38,7 +39,7 @@ Attributes
 
    
 
-.. py:function:: __get_auth_info(backend_url: Optional[str], backend_key: Optional[str] = None) -> Tuple[str, str]
+.. py:function:: __get_auth_info(backend_url: Optional[str], backend_key: Optional[str] = None, email: Optional[str] = None, password: Optional[str] = None) -> Tuple[str, str, str, str]
 
    Get the Supabase connection information.
 
@@ -46,10 +47,35 @@ Attributes
 
    :param backend_url: The URL of the Supabase backend.
    :param backend_key: The API key for the Supabase backend.
+   :param email: The email address of the user to log in.
+   :param password: The password of the user to log in.
    :return: A tuple of the backend URL and backend key.
 
 
-.. py:function:: login(email: str, password: str, backend_url: Optional[str] = None, backend_key: Optional[str] = None) -> tensorage.store.TensorStore
+.. py:function:: link_to(backend_url: str, backend_key: str) -> typing_extensions.Literal[True]
+                 link_to(backend_url: str, backend_key: str, password: str, email: str) -> tensorage.store.TensorStore
+
+   Link to a Supabase backend using the provided backend URL and key.
+
+   If a password and email are provided, logs in to the backend using the provided credentials.
+
+   :param backend_url: The URL of the Supabase backend to link to.
+   :type backend_url: str
+   :param backend_key: The key of the Supabase backend to link to.
+   :type backend_key: str
+   :param password: The password to use for logging in to the backend. Defaults to None.
+   :type password: Optional[str]
+   :param email: The email to use for logging in to the backend. Defaults to None.
+   :type email: Optional[str]
+
+   :returns: If no credentials are provided, returns True. If credentials are provided, returns a TensorStore object representing the linked backend.
+   :rtype: Union[True, TensorStore]
+
+   :raises ValueError: If the backend URL or key are not provided.
+   :raises AuthenticationError: If the provided credentials are invalid.
+
+
+.. py:function:: login(email: Optional[str] = None, password: Optional[str] = None, backend_url: Optional[str] = None, backend_key: Optional[str] = None) -> tensorage.store.TensorStore
 
    Log in to the Supabase backend using email and password authentication.
 
