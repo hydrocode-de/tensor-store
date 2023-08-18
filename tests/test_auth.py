@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import Mock, patch, mock_open
 import json
 
-from tensorage.auth import link_to, login, SUPA_FILE
+from tensorage.auth import link_to, login, signup, SUPA_FILE
 from tensorage.store import TensorStore
 
 backend_config = dict(SUPABASE_URL='https://test.com', SUPABASE_KEY='test_key')
@@ -58,4 +58,21 @@ class TestBackendSession(unittest.TestCase):
         # make sure its the right error message
         self.assertTrue('Email and password are not saved in' in str(err.exception))
 
+    @patch('builtins.open', new_callable=mock_open(read_data=backend_config_json))
+    @patch('tensorage.session.BackendSession.client')
+    def test_signup(self, client, fs):
+        """
+        Test the register function of the backend session
+        """
+        # mock the sign_up function
+        auth_response = Mock()
+        auth_response.user = dict(username='test_email')
+        auth_response.session = dict(access_token='test_access_token', refresh_token='test_refresh_token')
+        client.auth.sign_up.return_value = auth_response
+
+        # test the signup function
+        response = signup('test_email', 'test_password')
+        
+        # assert that the response is correct
+        self.assertEqual(response.user, auth_response.user)
 
