@@ -146,7 +146,7 @@ def signup(email: str, password: str, backend_url: Optional[str] = None, backend
     :raises RuntimeError: If the signup fails.
     """
     # get the environment variables
-    backend_url, backend_key = __get_auth_info(backend_url=backend_url, backend_key=backend_key)
+    backend_url, backend_key, _, _ = __get_auth_info(backend_url=backend_url, backend_key=backend_key)
         
     # get a session
     session = BackendSession(None, None, backend_url, backend_key)
