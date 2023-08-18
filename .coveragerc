@@ -3,6 +3,7 @@ omit =
     tests/*
     setup.py
     docs/*
+    ...
 
 [report]
 exclude_lines = 

@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import Mock, patch, mock_open
 import json
 
-from tensorage.auth import link_to, login, signup, SUPA_FILE
+from tensorage.auth import link_to, login, signup, SUPA_FILE, _get_auth_info
 from tensorage.store import TensorStore
 
 backend_config = dict(SUPABASE_URL='https://test.com', SUPABASE_KEY='test_key')
@@ -57,6 +57,14 @@ class TestBackendSession(unittest.TestCase):
 
         # make sure its the right error message
         self.assertTrue('Email and password are not saved in' in str(err.exception))
+
+    def test_missing_key(self):
+        """Test the missing SUPABASE_KEY execption."""
+        with self.assertRaises(RuntimeError) as err:
+            _get_auth_info(backend_url='https://test.com', backend_key=None)
+        
+        # make sure its the right error message
+        self.assertTrue('SUPABASE_KEY environment variable' in str(err.exception))
 
     @patch('builtins.open', new_callable=mock_open(read_data=backend_config_json))
     @patch('tensorage.session.BackendSession.client')
