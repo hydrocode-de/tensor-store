@@ -8,6 +8,11 @@ from tensorage.store import TensorStore
 backend_config = dict(SUPABASE_URL='https://test.com', SUPABASE_KEY='test_key')
 backend_config_json = json.dumps(backend_config)
 
+# when running tests, remove stuff loaded from local .env files
+import os
+os.environ.pop('SUPABASE_URL')
+os.environ.pop('SUPABASE_KEY')
+
 
 class TestBackendSession(unittest.TestCase):
     @patch('builtins.open', new_callable=mock_open())
@@ -66,9 +71,9 @@ class TestBackendSession(unittest.TestCase):
         # make sure its the right error message
         self.assertTrue('SUPABASE_KEY environment variable' in str(err.exception))
 
-    @patch('builtins.open', new_callable=mock_open(read_data=backend_config_json))
+    @patch.dict(os.environ, backend_config)
     @patch('tensorage.session.BackendSession.client')
-    def test_signup(self, client, fs):
+    def test_signup(self, client):
         """
         Test the register function of the backend session
         """
