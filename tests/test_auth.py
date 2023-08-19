@@ -10,8 +10,10 @@ backend_config_json = json.dumps(backend_config)
 
 # when running tests, remove stuff loaded from local .env files
 import os
-os.environ.pop('SUPABASE_URL')
-os.environ.pop('SUPABASE_KEY')
+if 'SUPABASE_URL' in os.environ:
+    os.environ.pop('SUPABASE_URL')
+if 'SUPABASE_KEY' in os.environ:
+    os.environ.pop('SUPABASE_KEY')
 
 
 class TestBackendSession(unittest.TestCase):
