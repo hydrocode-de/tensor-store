@@ -3,7 +3,6 @@ omit =
     tests/*
     setup.py
     docs/*
-    @overload
 
 [report]
 exclude_lines = 
@@ -16,3 +15,4 @@ exclude_lines =
     if False
     if 0:
     if self\.debug
+    @overload

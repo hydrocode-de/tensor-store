@@ -20,7 +20,7 @@ from .session import BackendSession
 SUPA_FILE = os.path.join(os.path.expanduser('~'), '.tensorage.conf')
 
 
-def _get_auth_info(backend_url: Optional[str], backend_key: Optional[str] = None, email: Optional[str] = None, password: Optional[str] = None) -> Tuple[str, str, str, str]:
+def _get_auth_info(backend_url: Optional[str] = None, backend_key: Optional[str] = None, email: Optional[str] = None, password: Optional[str] = None) -> Tuple[str, str, str, str]:
     """
     Get the Supabase connection information.
 
