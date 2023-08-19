@@ -91,3 +91,17 @@ class TestBackendSession(unittest.TestCase):
         # assert that the response is correct
         self.assertEqual(response.user, auth_response.user)
 
+    @patch('json.load', new_callable=lambda: lambda x: backend_config)
+    @patch('os.path.exists', new_callable=lambda: Mock(return_value=True))
+    @patch('builtins.open', new_callable=mock_open())
+    def test_read_supa_file(self, fs, *args):
+        """
+        """
+        backend_url, backend_key, _, _ = _get_auth_info()
+        
+        # make sure that the file was read
+        fs.assert_called_once_with(SUPA_FILE, 'r')
+
+        # assert backend_url and backend_key
+        self.assertEqual(backend_url, backend_config['SUPABASE_URL'])
+        self.assertEqual(backend_key, backend_config['SUPABASE_KEY'])
