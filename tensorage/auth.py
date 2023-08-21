@@ -20,7 +20,7 @@ from .session import BackendSession
 SUPA_FILE = os.path.join(os.path.expanduser('~'), '.tensorage.conf')
 
 
-def __get_auth_info(backend_url: Optional[str], backend_key: Optional[str] = None, email: Optional[str] = None, password: Optional[str] = None) -> Tuple[str, str, str, str]:
+def _get_auth_info(backend_url: Optional[str] = None, backend_key: Optional[str] = None, email: Optional[str] = None, password: Optional[str] = None) -> Tuple[str, str, str, str]:
     """
     Get the Supabase connection information.
 
@@ -116,7 +116,7 @@ def login(email: Optional[str] = None, password: Optional[str] = None, backend_u
     :raises RuntimeError: If the login fails.
     """
     # get the environment variables
-    backend_url, backend_key, email, password = __get_auth_info(backend_url=backend_url, backend_key=backend_key, email=email, password=password)
+    backend_url, backend_key, email, password = _get_auth_info(backend_url=backend_url, backend_key=backend_key, email=email, password=password)
     
     # check that email and password are supplied
     if email is None or password is None:
@@ -146,7 +146,7 @@ def signup(email: str, password: str, backend_url: Optional[str] = None, backend
     :raises RuntimeError: If the signup fails.
     """
     # get the environment variables
-    backend_url, backend_key = __get_auth_info(backend_url=backend_url, backend_key=backend_key)
+    backend_url, backend_key, _, _ = _get_auth_info(backend_url=backend_url, backend_key=backend_key)
         
     # get a session
     session = BackendSession(None, None, backend_url, backend_key)
