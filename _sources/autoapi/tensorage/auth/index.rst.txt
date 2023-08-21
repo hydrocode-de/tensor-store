@@ -20,7 +20,7 @@ Functions
 
 .. autoapisummary::
 
-   tensorage.auth.__get_auth_info
+   tensorage.auth._get_auth_info
    tensorage.auth.link_to
    tensorage.auth.login
    tensorage.auth.signup
@@ -39,7 +39,7 @@ Attributes
 
    
 
-.. py:function:: __get_auth_info(backend_url: Optional[str], backend_key: Optional[str] = None, email: Optional[str] = None, password: Optional[str] = None) -> Tuple[str, str, str, str]
+.. py:function:: _get_auth_info(backend_url: Optional[str] = None, backend_key: Optional[str] = None, email: Optional[str] = None, password: Optional[str] = None) -> Tuple[str, str, str, str]
 
    Get the Supabase connection information.
 

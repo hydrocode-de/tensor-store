@@ -22,9 +22,6 @@ Classes
 
    Bases: :py:obj:`tensorage.backend.base.BaseContext`
 
-   Helper class that provides a standard way to create an ABC using
-   inheritance.
-
    .. py:method:: __setup_auth()
 
 
