@@ -56,7 +56,7 @@ class DatabaseContext(BaseContext):
             except APIError as e:
                 if e.code == '42P01':
                     missing_table = True
-                else:
+                else:  # pragma: no cover
                     raise e
         
         # check if any of the needed tables was not found
