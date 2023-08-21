@@ -105,5 +105,21 @@ class TestDatabaseContext(unittest.TestCase):
         self.assertTrue(isinstance(response, np.ndarray))
         self.assertEqual(response.shape, (1, 2, 3))
 
+    def test_get_dataset_keys(self):
+        # crate mocked dataset keys
+        mock_keys = MagicMock()
+        mock_keys.data = [{'key': 'foo'}, {'key': 'bar'}, {'key': 'baz'}]
+        
+        # mock the select method
+        self.mock_backend.client.table.return_value.select.return_value.execute.return_value = mock_keys
+
+        # call the list_dataset_keys method
+        keys = self.db_context.list_dataset_keys()
+
+        # assert that the response is correct
+        for key in ('foo', 'bar', 'baz'):
+            self.assertTrue(key in keys)
+
+
 if __name__ == '__main__':
     unittest.main()
