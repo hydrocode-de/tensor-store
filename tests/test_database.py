@@ -119,6 +119,29 @@ class TestDatabaseContext(unittest.TestCase):
         # assert that the response is correct
         for key in ('foo', 'bar', 'baz'):
             self.assertTrue(key in keys)
+    
+    def test_append_tensor(self):
+        # create a new backend here
+        mock_backend = MagicMock()
+
+        # build a mock dataset response
+        mock_dataset_response = MagicMock()
+        mock_dataset_response.data = [{'id': 42, 'key': 'test', 'shape': [10, 2, 3], 'ndim': 3, 'is_shared': False, 'type': 'float32'}]
+
+        # mock the insert method
+        mock_backend.client.table.return_value.insert.return_value.execute.return_value = mock_dataset_response
+
+        # create a new DatabaseContext instance
+        db = DatabaseContext(mock_backend)
+
+        # first insert a tensor
+        db.insert_tensor(data_id=42, data=[np.random.random((10, 2, 3)).astype(np.float32)])
+        
+        # call the append tensor method
+        db.append_tensor(data_id=42, data=[np.random.random((10, 2, 3)).astype(np.float32)])
+
+        # make sure the client.table.insert method was called the exact amount of times
+        self.assertEquals(len(mock_backend.client.table.return_value.insert.mock_calls), 4)
 
 
 if __name__ == '__main__':
