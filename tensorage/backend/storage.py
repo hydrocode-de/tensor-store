@@ -117,8 +117,8 @@ class StorageContext(BaseContext):
 
         return True
 
-    def append_tensor(self, data_id: int, data: List[np.ndarray]) -> bool:
-        return super().append_tensor(data_id, data)
+    def append_tensor(self, key: str, data: List[np.ndarray]) -> bool:
+        return super().append_tensor(key, data)
     
     def remove_dataset(self, key: str) -> bool:
         # setup auth token

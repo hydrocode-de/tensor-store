@@ -219,18 +219,37 @@ class DatabaseContext(BaseContext):
 
         return [row['key'] for row in response.data]
 
-    def append_tensor(self, data_id: int, data: List[np.ndarray]) -> bool:
+    def append_tensor(self, key: str, data: List[np.ndarray]) -> bool:
         """
         Appends a tensor to the existing tensor data with the given data ID.
 
         Args:
-            data_id (int): The unique identifier for the tensor data.
+            key (str): The unique identifier for the tensor data.
             data (List[np.ndarray]): The tensor data to be appended.
 
         Returns:
             bool: True if the tensor data was successfully appended, False otherwise.
 
         Raises:
-            ValueError: If the tensor data with the given ID does not exist in the database.
+            KeyError: If the tensor data with the given ID does not exist in the database.
         """
-        return super().append_tensor(data_id, data)
+        # first, get the dataset
+        try:
+            dataset = self.get_dataset(key)
+            if dataset is None:
+                raise KeyError()
+        except KeyError:
+            raise KeyError(f"Dataset '{key}' not found. You cannot append to a non-existing datasets.")
+
+        # if the above dit not raise a KeyError, we can assume the dataset exists
+        self.__setup_auth()
+        
+        # append the tensor with the correct offset
+        self.insert_tensor(data_id=dataset.id, data=data, offset=dataset.shape[0] + 1)
+
+        # if there was no error, update the dataset
+        new_shape = tuple([dataset.shape[0] + sum([chunk.shape[0] for chunk in data]), *dataset.shape[1:]])
+        self.backend.client.table('datasets').update({'shape': new_shape}).eq('id', dataset.id).execute()
+
+        # restore old token
+        self.__restore_auth()

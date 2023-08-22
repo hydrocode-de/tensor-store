@@ -42,7 +42,7 @@ class BaseContext(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def append_tensor(self, data_id: int, data: List[np.ndarray]) -> bool:
+    def append_tensor(self, key: str, data: List[np.ndarray]) -> bool:
         raise NotImplementedError
     
     @abstractmethod
