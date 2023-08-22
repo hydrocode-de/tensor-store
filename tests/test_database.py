@@ -130,6 +130,7 @@ class TestDatabaseContext(unittest.TestCase):
 
         # mock the insert method
         mock_backend.client.table.return_value.insert.return_value.execute.return_value = mock_dataset_response
+        mock_backend.client.table.return_value.select.return_value.eq.return_value.execute.return_value = mock_dataset_response
 
         # create a new DatabaseContext instance
         db = DatabaseContext(mock_backend)
@@ -138,11 +139,33 @@ class TestDatabaseContext(unittest.TestCase):
         db.insert_tensor(data_id=42, data=[np.random.random((10, 2, 3)).astype(np.float32)])
         
         # call the append tensor method
-        db.append_tensor(data_id=42, data=[np.random.random((10, 2, 3)).astype(np.float32)])
+        db.append_tensor(key='test', data=[np.random.random((16, 2, 3)).astype(np.float32)])
 
         # make sure the client.table.insert method was called the exact amount of times
         self.assertEquals(len(mock_backend.client.table.return_value.insert.mock_calls), 4)
 
+        # make sure the update function was called with the correct shape
+        mock_backend.client.table.return_value.update.assert_called_once_with({'shape': (26, 2, 3)})
+
+    def test_append_tensor_not_found(self):
+        # create a new backend here
+        mock_backend = MagicMock()
+
+        # let the backend raise a KeyError
+        def raise_error():
+            raise KeyError()
+        
+        mock_backend.client.table.return_value.select.return_value.eq.return_value.execute.side_effect = raise_error
+
+        # create a new DatabaseContext instance
+        db = DatabaseContext(mock_backend)
+
+        # call the append tensor method
+        with self.assertRaises(KeyError) as e:
+            db.append_tensor(key='foobar', data=[np.random.random((10, 2, 3)).astype(np.float32)])
+
+        # assert that the error message is correct
+        self.assertTrue("Dataset 'foobar' not found" in str(e.exception))
 
 if __name__ == '__main__':
     unittest.main()
