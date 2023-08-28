@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from tensorage.session import BackendSession
     from tensorage.types import Dataset    
 
