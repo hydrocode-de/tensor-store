@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from tensorage.session import BackendSession
     from tensorage.types import Dataset    
 
@@ -42,7 +42,7 @@ class BaseContext(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def append_tensor(self, data_id: int, data: List[np.ndarray]) -> bool:
+    def append_tensor(self, key: str, data: List[np.ndarray]) -> bool:
         raise NotImplementedError
     
     @abstractmethod
