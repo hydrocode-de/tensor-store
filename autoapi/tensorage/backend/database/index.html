@@ -32,9 +32,9 @@
 
           <div class="body" role="main">
             
-  <section id="tensorage-backend-database">
-<h1><a class="reference internal" href="#module-tensorage.backend.database" title="tensorage.backend.database"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.backend.database</span></code></a><a class="headerlink" href="#tensorage-backend-database" title="Link to this heading">¶</a></h1>
-<p id="module-tensorage.backend.database">This module defines the DatabaseContext class which is responsible for interacting with the Supabase backend and its underlying Postgres database.</p>
+  <section id="module-tensorage.backend.database">
+<span id="tensorage-backend-database"></span><h1><a class="reference internal" href="#module-tensorage.backend.database" title="tensorage.backend.database"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorage.backend.database</span></code></a><a class="headerlink" href="#module-tensorage.backend.database" title="Link to this heading">¶</a></h1>
+<p>This module defines the DatabaseContext class which is responsible for interacting with the Supabase backend and its underlying Postgres database.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
 <section id="classes">
@@ -217,12 +217,12 @@ is requested.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tensorage.backend.database.DatabaseContext.append_tensor">
-<span class="sig-name descname"><span class="pre">append_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.append_tensor" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">append_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#tensorage.backend.database.DatabaseContext.append_tensor" title="Link to this definition">¶</a></dt>
 <dd><p>Appends a tensor to the existing tensor data with the given data ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_id</strong> (<em>int</em>) – The unique identifier for the tensor data.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The unique identifier for the tensor data.</p></li>
 <li><p><strong>data</strong> (<em>List</em><em>[</em><em>np.ndarray</em><em>]</em>) – The tensor data to be appended.</p></li>
 </ul>
 </dd>
@@ -233,7 +233,7 @@ is requested.</p>
 <dd class="field-odd"><p>bool</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If the tensor data with the given ID does not exist in the database.</p>
+<dd class="field-even"><p><strong>KeyError</strong> – If the tensor data with the given ID does not exist in the database.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -310,7 +310,7 @@ is requested.</p>
       &copy;2023, Mirko Mälicke.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |

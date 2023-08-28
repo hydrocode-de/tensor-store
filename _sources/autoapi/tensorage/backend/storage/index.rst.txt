@@ -49,7 +49,7 @@ Classes
    .. py:method:: insert_tensor(data_id: int, data: List[numpy.ndarray], offset: int = 0) -> bool
 
 
-   .. py:method:: append_tensor(data_id: int, data: List[numpy.ndarray]) -> bool
+   .. py:method:: append_tensor(key: str, data: List[numpy.ndarray]) -> bool
 
 
    .. py:method:: remove_dataset(key: str) -> bool

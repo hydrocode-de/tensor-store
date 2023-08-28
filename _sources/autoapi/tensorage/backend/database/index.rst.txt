@@ -142,19 +142,19 @@ Classes
       :rtype: List[str]
 
 
-   .. py:method:: append_tensor(data_id: int, data: List[numpy.ndarray]) -> bool
+   .. py:method:: append_tensor(key: str, data: List[numpy.ndarray]) -> bool
 
       Appends a tensor to the existing tensor data with the given data ID.
 
-      :param data_id: The unique identifier for the tensor data.
-      :type data_id: int
+      :param key: The unique identifier for the tensor data.
+      :type key: str
       :param data: The tensor data to be appended.
       :type data: List[np.ndarray]
 
       :returns: True if the tensor data was successfully appended, False otherwise.
       :rtype: bool
 
-      :raises ValueError: If the tensor data with the given ID does not exist in the database.
+      :raises KeyError: If the tensor data with the given ID does not exist in the database.
 
 
 
