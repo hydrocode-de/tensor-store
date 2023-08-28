@@ -236,7 +236,7 @@ class DatabaseContext(BaseContext):
         # first, get the dataset
         try:
             dataset = self.get_dataset(key)
-            if dataset is None:
+            if dataset is None:  # pragma: no cover
                 raise KeyError()
         except KeyError:
             raise KeyError(f"Dataset '{key}' not found. You cannot append to a non-existing datasets.")
