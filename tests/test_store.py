@@ -114,7 +114,7 @@ class TestTensorStore(unittest.TestCase):
         backend.database.return_value.__enter__.return_value.list_dataset_keys.return_value = ['test']
 
         # create the store
-        store = TensorStore(backend)
+        store = TensorStore(backend, allow_overwrite=True)
 
         # create the dataset
         data = np.random.random((10, 10, 10))
@@ -128,6 +128,25 @@ class TestTensorStore(unittest.TestCase):
 
         # make sure the insert_dataset function has also been called
         backend.database.return_value.__enter__.return_value.insert_dataset.assert_called_once_with('test', data.shape, data.ndim)
+    
+    def test_overwrite_not_allowed(self):
+        """
+        Test that a ValueError is raised if a key already exists and allow_overwrite is False.
+        """
+        # create a mock backend
+        backend = MagicMock()
+
+        # mock the list_dataset_keys backend function
+        backend.database.return_value.__enter__.return_value.list_dataset_keys.return_value = ['test']
+
+        # create the store
+        store = TensorStore(backend, allow_overwrite=False)
+
+        # assert the expection is raised
+        with self.assertRaises(ValueError) as err:
+            store['test'] = np.random.random((10, 10, 10))
+        
+        assert str(err.exception) == "The key 'test' already exists in the TensorStore. Set allow_overwrite=True to overwrite the existing dataset."
 
 if __name__ == '__main__':
     unittest.main()
