@@ -7,7 +7,7 @@ def get_script(name: str) -> str:
     # get the path of the file
     if not name.endswith('.sql'):
         name = f"{name}.sql"
-    path = os.path.join(BASE_PATH, 'sql', name.lower())
+    path = os.path.join(BASE_PATH, name.lower())
 
     # read the file
     with open(path, 'r') as f:
