@@ -102,6 +102,32 @@ class TestTensorStore(unittest.TestCase):
         expected_batch_size = int(np.ceil(data.shape[0] / 2))
         assert backend.database.return_value.__enter__.return_value.insert_tensor.call_count == expected_batch_size
 
+    def test_overwrite_dataset(self):
+        """
+        Mock the backend as if a key already exists and assert that the remove_dataset
+        function is called, before the new dataset is inserted.
+        """
+        # create a mock backend
+        backend = MagicMock()
+
+        # mock the list_dataset_keys backend function
+        backend.database.return_value.__enter__.return_value.list_dataset_keys.return_value = ['test']
+
+        # create the store
+        store = TensorStore(backend)
+
+        # create the dataset
+        data = np.random.random((10, 10, 10))
+        dataset = Dataset(14, 'test', data.shape, data.ndim, 'float32', False)
+
+        # create a tensor with a duplicated key
+        store['test'] = data
+
+        # make sure the remove_dataset function has been called
+        backend.database.return_value.__enter__.return_value.remove_dataset.assert_called_once_with('test')
+
+        # make sure the insert_dataset function has also been called
+        backend.database.return_value.__enter__.return_value.insert_dataset.assert_called_once_with('test', data.shape, data.ndim)
 
 if __name__ == '__main__':
     unittest.main()
