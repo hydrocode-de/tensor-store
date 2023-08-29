@@ -212,6 +212,7 @@ class TensorStore(object):
             batches = [(i * batch_size, value[up:low]) for i, (up, low) in enumerate(batch_index)]
         else:
             batches = [(0, value)]
+            batch_size = 1
 
         # connect
         with self.backend.database() as db:
