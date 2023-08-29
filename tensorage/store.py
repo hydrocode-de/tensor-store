@@ -30,7 +30,7 @@ import numpy as np
 
 from tensorage.types import Dataset
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from tensorage.session import BackendSession
 
 
