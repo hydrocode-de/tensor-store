@@ -167,6 +167,31 @@ class TestTensorStore(unittest.TestCase):
         # extract the passed numpy and check the shape
         passed_numpy = backend.database.return_value.__enter__.return_value.insert_tensor.call_args[0][1][0]
         assert passed_numpy.shape == (100, )
+    
+    def test_cast_input_data(self):
+        """
+        Pass the data as plain list and make sure, that it gets casted to numpy.
+        """
+        # create a mock backend
+        backend = MagicMock()
+
+        # create the store
+        store = TensorStore(backend)
+
+        # create the dataset
+        data = np.ones((100, 100, 100)).tolist()
+
+        # create the tensor
+        store['test'] = data
+
+        # make sure the dataset was created correctly
+        backend.database.return_value.__enter__.return_value.insert_dataset.assert_called_once_with('test', (100, 100, 100), 3)
+
+        # extract the passed data and stick it together
+        passed_data = backend.database.return_value.__enter__.return_value.insert_tensor.call_args[0][1]
+        
+        # assert all chunks are of type numpy.ndarray
+        assert all([isinstance(chunk, np.ndarray) for chunk in passed_data])
 
 if __name__ == '__main__':
     unittest.main()
