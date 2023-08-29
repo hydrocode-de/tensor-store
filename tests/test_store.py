@@ -148,5 +148,25 @@ class TestTensorStore(unittest.TestCase):
         
         assert str(err.exception) == "The key 'test' already exists in the TensorStore. Set allow_overwrite=True to overwrite the existing dataset."
 
+    def test_transform_tensor_shape(self):
+        """
+        Pass a 1D numpy array and make sure, that the dataset is created using the correct shape.
+        """
+        # create a mock backend
+        backend = MagicMock()
+
+        # create the store
+        store = TensorStore(backend)
+
+        # create the 1D dataset
+        store['test'] = np.zeros((100,))
+
+        # make sure the dataset was created correctly
+        backend.database.return_value.__enter__.return_value.insert_dataset.assert_called_once_with('test', (1, 100), 2)
+
+        # extract the passed numpy and check the shape
+        passed_numpy = backend.database.return_value.__enter__.return_value.insert_tensor.call_args[0][1][0]
+        assert passed_numpy.shape == (100, )
+
 if __name__ == '__main__':
     unittest.main()
