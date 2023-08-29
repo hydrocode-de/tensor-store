@@ -59,6 +59,7 @@ class TensorStore(object):
 
     # some stuff for upload
     chunk_size: int = field(default=100000, repr=False)
+    allow_overwrite: bool = False
 
     # add some internal metadata
     _keys: List[str] = field(default_factory=list, repr=False)
@@ -178,10 +179,15 @@ class TensorStore(object):
         Raises:
             ValueError: If the tensor with the given key does not exist in the database.
 
-        """        # check if the key is already in the database
+        """        
+        # check if the key is already in the database
         if key in self.keys():
-            # TODO here we need to update the dataset in the database
-            raise NotImplementedError('Updating datasets is not implemented yet.')
+            # check if we are allowed to overwrite
+            if not self.allow_overwrite:
+                raise ValueError(f"The key '{key}' already exists in the TensorStore. Set allow_overwrite=True to overwrite the existing dataset.")
+            
+            # otherwise delete the dataset
+            self.__delitem__(key)
 
         # first make a numpy array from it
         if isinstance(value, list):
