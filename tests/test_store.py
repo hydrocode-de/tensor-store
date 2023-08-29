@@ -14,7 +14,14 @@ class TestTensorStore(unittest.TestCase):
         """
         Test that the store gets initialized correctly.
         """
-        pass
+        # create a mock backend
+        backend = MagicMock()
+
+        # create the store
+        store = TensorStore(backend)
+        
+        # make sure schema has been checked
+        backend.database.return_value.__enter__.return_value.check_schema_installed.assert_called_once()
 
     def test_create_tensor_single_batch(self):
         """
