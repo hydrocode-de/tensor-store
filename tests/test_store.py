@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import MagicMock
+import warnings
 
 import numpy as np
 
@@ -22,6 +23,24 @@ class TestTensorStore(unittest.TestCase):
         
         # make sure schema has been checked
         backend.database.return_value.__enter__.return_value.check_schema_installed.assert_called_once()
+
+    def test_store_init_raises_warning(self):
+        """
+        Test that the store raises a warning if the schema is not installed.
+        """
+        # create a mock backend
+        backend = MagicMock()
+
+        # mock the schema installed method
+        backend.database.return_value.__enter__.return_value.check_schema_installed.return_value = False
+
+        # create the store and catch the warning
+        with warnings.catch_warnings(record=True) as w:
+            store = TensorStore(backend)
+            
+            assert len(w) == 1
+            assert issubclass(w[-1].category, UserWarning)
+            assert "The schema for the TensorStore is not installed." in str(w[-1].message)
 
     def test_create_tensor_single_batch(self):
         """
