@@ -201,8 +201,6 @@ class TensorStore(object):
         if value.size > self.chunk_size:
             # figure out a good batch size
             batch_size = self.chunk_size // np.multiply(*value.shape[1:])
-            if batch_size == 0:
-                batch_size = 1
             
             # create the index over the batch to determine the offset on upload
             single_index = np.arange(0, value.shape[0], batch_size, dtype=int)
