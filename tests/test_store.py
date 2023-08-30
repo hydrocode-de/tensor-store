@@ -193,5 +193,41 @@ class TestTensorStore(unittest.TestCase):
         # assert all chunks are of type numpy.ndarray
         assert all([isinstance(chunk, np.ndarray) for chunk in passed_data])
 
+    def test_store_contains_key(self):
+        """
+        Test that the __contains__ method works correctly.
+        """
+        # create a mock backend
+        backend = MagicMock()
+
+        # mock the list_dataset_keys backend function
+        backend.database.return_value.__enter__.return_value.list_dataset_keys.return_value = ['foo', 'bar']
+
+        # create the store
+        store = TensorStore(backend)
+
+        # assert that the store contains the key 'foo'
+        assert 'foo' in store
+
+        # assert that the store does not contain the key 'baz'
+        assert 'baz' not in store
+
+    def test_store_dataset_len(self):
+        """
+        Test that the __len__ method works correctly.
+        """
+        # create a mock backend
+        backend = MagicMock()
+
+        # mock the list_dataset_keys backend function
+        backend.database.return_value.__enter__.return_value.list_dataset_keys.return_value = ['foo', 'bar']
+
+        # create the store
+        store = TensorStore(backend)
+
+        # assert that the store contains two datasets
+        assert len(store) == 2
+
+
 if __name__ == '__main__':
     unittest.main()
