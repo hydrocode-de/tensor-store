@@ -333,7 +333,7 @@ class StoreSlicer:
         if isinstance(args[0], int):
             index = [args[0] + 1, args[0] + 2]
         elif isinstance(args[0], slice):
-            index = [args[0].start + 1 if args[0].start is not None else 1, args[0].stop + 2 if args[0].stop is not None else self.dataset.shape[0] + 1]
+            index = [args[0].start + 1 if args[0].start is not None else 1, args[0].stop + 1 if args[0].stop is not None else self.dataset.shape[0] + 1]
         else:
             raise KeyError('Batch index needs to be passed as int or slice.')
 
@@ -398,4 +398,6 @@ class StoreSlicer:
         Raises:
             ValueError: If the tensor with the given key does not exist in the database.
         """
-        return self.get_iloc_slices(*args)
+        # return the result
+        return self.__getitem__(args)
+    
