@@ -1,11 +1,19 @@
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 import warnings
 
 import numpy as np
 
 from tensorage.store import TensorStore
 from tensorage.types import Dataset
+
+# when running tests, remove stuff loaded from local .env files
+import os
+if 'SUPABASE_URL' in os.environ:
+    os.environ.pop('SUPABASE_URL')
+if 'SUPABASE_KEY' in os.environ:
+    os.environ.pop('SUPABASE_KEY')
+
 
 class TestTensorStore(unittest.TestCase):
     def setUp(self) -> None:
@@ -227,6 +235,31 @@ class TestTensorStore(unittest.TestCase):
 
         # assert that the store contains two datasets
         assert len(store) == 2
+
+    def test_get_full_tensor(self):
+        """
+        Mock the backend and check that the data is loaded correctly
+        """
+        # create the backend
+        backend = MagicMock()
+        
+        # mock tge get dataset function
+        backend.database.return_value.__enter__.return_value.get_dataset.return_value = Dataset(1, 'foo', [30, 100, 5], 3, 'float32', False)
+
+        # mock the get_tensor function for the full dataset
+        backend.database.return_value.__enter__.return_value.get_tensor.return_value = np.random.random((30, 100, 5))
+
+        # create the store
+        store = TensorStore(backend)
+
+        # get the data
+        data = store['foo']
+
+        # make sure the indices were passed correctly
+        backend.database.return_value.__enter__.return_value.get_tensor.assert_called_once_with('foo', 1, 31, [1, 1], [101, 6])
+
+        # assert that the data has the correct shape
+        assert data.shape == (30, 100, 5)
 
 
 if __name__ == '__main__':
