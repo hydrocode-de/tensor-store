@@ -4,7 +4,7 @@ import warnings
 
 import numpy as np
 
-from tensorage.store import TensorStore
+from tensorage.store import TensorStore, StoreSlicer
 from tensorage.types import Dataset
 
 # when running tests, remove stuff loaded from local .env files
@@ -275,12 +275,43 @@ class TestTensorStore(unittest.TestCase):
         backend.database.return_value.__enter__.return_value.get_dataset.return_value = Dataset(1, 'foo', [30, 100, 5], 3, 'float32', False)
 
         # mock the get_tensor function for the full dataset
+        backend.database.return_value.__enter__.return_value.get_tensor.return_value = np.random.random((30, 100, 5))
+
+        # create the store
+        store = TensorStore(backend)
+
+        # get the data by attribute
+        foo_slice = store.foo
+
+        # make sure data is a numpy array
+        assert isinstance(foo_slice, StoreSlicer)
+        data = foo_slice()
+
+        # make sure the indices were passed correctly
+        backend.database.return_value.__enter__.return_value.get_tensor.assert_called_once_with('foo', 1, 31, [1, 1], [101, 6])
+
+        # assert that the data has the correct shape
+        assert data.shape == (30, 100, 5)
+    
+    def test_tensor_slicing(self):
+        """
+        """
+        # create the backend
+        backend = MagicMock()
+        
+        # mock the list of existing datasets
+        backend.database.return_value.__enter__.return_value.list_dataset_keys.return_value = ['foo']
+
+        # mock tge get dataset function
+        backend.database.return_value.__enter__.return_value.get_dataset.return_value = Dataset(1, 'foo', [30, 100, 5], 3, 'float32', False)
+
+        # mock the get_tensor function for the full dataset
         backend.database.return_value.__enter__.return_value.get_tensor.return_value = np.random.random((30, 20, 1))
 
         # create the store
         store = TensorStore(backend)
 
-        # get the data
+        # get the data by attribute
         data = store.foo[:, 10:30, 4]
 
         # make sure the indices were passed correctly
@@ -288,6 +319,31 @@ class TestTensorStore(unittest.TestCase):
 
         # assert that the data has the correct shape
         assert data.shape == (30, 20, 1)
+
+    def test_tensor_slice_without_attr(self):
+         # create the backend
+        backend = MagicMock()
+        
+        # mock the list of existing datasets
+        backend.database.return_value.__enter__.return_value.list_dataset_keys.return_value = ['foo']
+
+        # mock tge get dataset function
+        backend.database.return_value.__enter__.return_value.get_dataset.return_value = Dataset(1, 'foo', [30, 100, 5], 3, 'float32', False)
+
+        # mock the get_tensor function for the full dataset
+        backend.database.return_value.__enter__.return_value.get_tensor.return_value = np.random.random((10, 100, 2))
+
+        # create the store
+        store = TensorStore(backend)
+        
+        # slice the data
+        data = store['foo', :10, :, 2:3]
+
+        # make sure the indices were passed correctly
+        backend.database.return_value.__enter__.return_value.get_tensor.assert_called_once_with('foo', 1, 11, [1, 3], [101, 4])
+
+        # assert that the data has the correct shape
+        assert data.shape == (10, 100, 2)
 
     def test_missing_key(self):
         """
@@ -304,6 +360,12 @@ class TestTensorStore(unittest.TestCase):
             store.foo
 
         self.assertTrue("'TensorStore' object has no attribute 'foo'" in str(err.exception))
+
+        # call by slice and leave out the key
+        with self.assertRaises(KeyError) as err:
+            store[:, 10:20, 5]
+        
+        self.assertTrue("You need to pass the key as first argument" in str(err.exception))
 
 
 if __name__ == '__main__':
