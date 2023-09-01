@@ -77,14 +77,8 @@ class TensorStore(object):
 
     def get_context(self):
         raise NotImplementedError
-        if self.engine == 'database':
-            return self.backend.database()
-        elif self.engine == 'storage':
-            return self.backend.storage()
-        else:
-            raise ValueError(f"Unknown engine '{self.engine}'.")
 
-    def get_select_indices(self, key: Union[str, Tuple[Union[str, slice, int]]]) -> Tuple[str, Tuple[int, int], List[Tuple[int, int]]]:
+    def depr_get_select_indices(self, key: Union[str, Tuple[Union[str, slice, int]]]) -> Tuple[str, Tuple[int, int], List[Tuple[int, int]]]:
         """
         Retrieves the select indices for the given key from the database.
 
@@ -126,8 +120,8 @@ class TensorStore(object):
         """        
         # the user has to pass the key
         if isinstance(key, str):
-            key = (key, )  #make it a tuple
             name = key
+            key = (key, )  #make it a tuple
         elif isinstance(key[0], str):
             name = key[0]
         else:
