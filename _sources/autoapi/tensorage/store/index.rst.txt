@@ -97,6 +97,12 @@ Classes
 
       
 
+   .. py:attribute:: allow_overwrite
+      :type: bool
+      :value: False
+
+      
+
    .. py:attribute:: _keys
       :type: List[str]
 
@@ -109,7 +115,7 @@ Classes
       :abstractmethod:
 
 
-   .. py:method:: get_select_indices(key: Union[str, Tuple[Union[str, slice, int]]]) -> Tuple[str, Tuple[int, int], List[Tuple[int, int]]]
+   .. py:method:: depr_get_select_indices(key: Union[str, Tuple[Union[str, slice, int]]]) -> Tuple[str, Tuple[int, int], List[Tuple[int, int]]]
 
       Retrieves the select indices for the given key from the database.
 
