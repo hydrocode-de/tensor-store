@@ -339,7 +339,7 @@ class StoreSlicer:
 
         # get the slices
         if len(args) == 1:
-            slices = [[1, self.dataset.shape[i] + 1] for i in range(2, self.dataset.ndim)]
+            slices = [[1, self.dataset.shape[i] + 1] for i in range(1, self.dataset.ndim)]
         else:  # 2 or more beyond index
             slices = []
             for i, arg in enumerate(args[1:]):
