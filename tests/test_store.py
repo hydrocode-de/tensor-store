@@ -422,6 +422,31 @@ class TestTensorStore(unittest.TestCase):
         assert idx == [11, 12]
         assert slc == [[6, 8], [1, 21], [1, 6]]
 
+    def test_slicer_argument_errors(self):
+        """
+        Test the slicing argument errors of the StoreSlicer
+        """
+        # create a mock backend
+        backend = MagicMock()
+
+        # create the store
+        store = TensorStore(backend)
+
+        # create a dataset
+        dataset = Dataset(1, 'foo', [30, 100, 20, 5], 4, 'float32', False)
+
+        # create a StoreSlicer
+        slicer = StoreSlicer(_store=store, key='foo', dataset=dataset)
+
+        # test KeyError on non-numerical key
+        with self.assertRaises(KeyError) as err:
+            slicer.get_iloc_slices('foo')
+        assert "Batch index needs to be" in str(err.exception)
+
+        # test slice non-numerical key error
+        with self.assertRaises(KeyError) as err:
+            slicer.get_iloc_slices(10, 'foobar')
+        assert "Slice needs to be passed as int or slice" in str(err.exception)
 
 
 if __name__ == '__main__':
