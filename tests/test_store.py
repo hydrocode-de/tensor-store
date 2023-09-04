@@ -367,6 +367,29 @@ class TestTensorStore(unittest.TestCase):
         
         self.assertTrue("You need to pass the key as first argument" in str(err.exception))
 
+    def test_dir_method(self):
+        """
+        Add a few keys and find them in in __dir__ along with instance methods.
+        """
+        # create the backend
+        backend = MagicMock()
+
+        # mock a few keys
+        backend.database.return_value.__enter__.return_value.list_dataset_keys.return_value = ['foo', 'bar']
+
+        # create the store
+        store = TensorStore(backend)
+
+        # get the dir
+        dir_list = dir(store)
+
+        # assert that the keys are in the dir
+        assert 'foo' in dir_list
+        assert 'bar' in dir_list
+
+        # assert that the instance methods and attributes are in the dir
+        assert 'chunk_size' in dir_list
+        assert 'keys' in dir_list
 
 if __name__ == '__main__':
     unittest.main()
