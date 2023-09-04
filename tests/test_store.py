@@ -391,5 +391,38 @@ class TestTensorStore(unittest.TestCase):
         assert 'chunk_size' in dir_list
         assert 'keys' in dir_list
 
+    def test_slicing_options(self):
+        """
+        Test StoreSlicer indexer methods
+        """
+        # create a mock backend
+        backend = MagicMock()
+
+        # create the store
+        store = TensorStore(backend)
+
+        # create a dataset
+        dataset = Dataset(1, 'foo', [30, 100, 20, 5], 4, 'float32', False)
+
+        # create a StoreSlicer
+        slicer = StoreSlicer(_store=store, key='foo', dataset=dataset)
+
+        # test slice options without slicing
+        _, idx, slc = slicer.get_iloc_slices()
+        assert idx == [1, 31]
+        assert slc == [[1, 101], [1, 21], [1, 6]]
+        
+        # pass only 1 argument, along first axis
+        _, idx, slc = slicer.get_iloc_slices(10)
+        assert idx == [11, 12]
+        assert slc == [[1, 101], [1, 21], [1, 6]]
+
+        # pass more than one argument, but lack one dimension
+        _, idx, slc = slicer.get_iloc_slices(10, slice(5, 7))
+        assert idx == [11, 12]
+        assert slc == [[6, 8], [1, 21], [1, 6]]
+
+
+
 if __name__ == '__main__':
     unittest.main()
