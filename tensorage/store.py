@@ -30,7 +30,7 @@ import numpy as np
 
 from tensorage.types import Dataset
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from tensorage.session import BackendSession
 
 
@@ -59,6 +59,7 @@ class TensorStore(object):
 
     # some stuff for upload
     chunk_size: int = field(default=100000, repr=False)
+    allow_overwrite: bool = False
 
     # add some internal metadata
     _keys: List[str] = field(default_factory=list, repr=False)
@@ -76,14 +77,8 @@ class TensorStore(object):
 
     def get_context(self):
         raise NotImplementedError
-        if self.engine == 'database':
-            return self.backend.database()
-        elif self.engine == 'storage':
-            return self.backend.storage()
-        else:
-            raise ValueError(f"Unknown engine '{self.engine}'.")
 
-    def get_select_indices(self, key: Union[str, Tuple[Union[str, slice, int]]]) -> Tuple[str, Tuple[int, int], List[Tuple[int, int]]]:
+    def depr_get_select_indices(self, key: Union[str, Tuple[Union[str, slice, int]]]) -> Tuple[str, Tuple[int, int], List[Tuple[int, int]]]:
         """
         Retrieves the select indices for the given key from the database.
 
@@ -125,8 +120,8 @@ class TensorStore(object):
         """        
         # the user has to pass the key
         if isinstance(key, str):
-            key = (key, )  #make it a tuple
             name = key
+            key = (key, )  #make it a tuple
         elif isinstance(key[0], str):
             name = key[0]
         else:
@@ -178,10 +173,15 @@ class TensorStore(object):
         Raises:
             ValueError: If the tensor with the given key does not exist in the database.
 
-        """        # check if the key is already in the database
+        """        
+        # check if the key is already in the database
         if key in self.keys():
-            # TODO here we need to update the dataset in the database
-            raise NotImplementedError('Updating datasets is not implemented yet.')
+            # check if we are allowed to overwrite
+            if not self.allow_overwrite:
+                raise ValueError(f"The key '{key}' already exists in the TensorStore. Set allow_overwrite=True to overwrite the existing dataset.")
+            
+            # otherwise delete the dataset
+            self.__delitem__(key)
 
         # first make a numpy array from it
         if isinstance(value, list):
@@ -201,8 +201,6 @@ class TensorStore(object):
         if value.size > self.chunk_size:
             # figure out a good batch size
             batch_size = self.chunk_size // np.multiply(*value.shape[1:])
-            if batch_size == 0:
-                batch_size = 1
             
             # create the index over the batch to determine the offset on upload
             single_index = np.arange(0, value.shape[0], batch_size, dtype=int)
@@ -212,6 +210,7 @@ class TensorStore(object):
             batches = [(i * batch_size, value[up:low]) for i, (up, low) in enumerate(batch_index)]
         else:
             batches = [(0, value)]
+            batch_size = 1
 
         # connect
         with self.backend.database() as db:
@@ -334,13 +333,13 @@ class StoreSlicer:
         if isinstance(args[0], int):
             index = [args[0] + 1, args[0] + 2]
         elif isinstance(args[0], slice):
-            index = [args[0].start + 1, args[0].stop + 2]
+            index = [args[0].start + 1 if args[0].start is not None else 1, args[0].stop + 1 if args[0].stop is not None else self.dataset.shape[0] + 1]
         else:
             raise KeyError('Batch index needs to be passed as int or slice.')
 
         # get the slices
         if len(args) == 1:
-            slices = [[1, self.dataset.shape[i] + 1] for i in range(2, self.dataset.ndim)]
+            slices = [[1, self.dataset.shape[i] + 1] for i in range(1, self.dataset.ndim)]
         else:  # 2 or more beyond index
             slices = []
             for i, arg in enumerate(args[1:]):
@@ -399,4 +398,6 @@ class StoreSlicer:
         Raises:
             ValueError: If the tensor with the given key does not exist in the database.
         """
-        return self.get_iloc_slices(*args)
+        # return the result
+        return self.__getitem__(args)
+    
